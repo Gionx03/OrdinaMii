@@ -1,4 +1,4 @@
-package com.example.ordinamii;
+package com.example.ordinaMii;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
