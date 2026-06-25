@@ -1,6 +1,7 @@
 package com.example.ordinaMii.Entity;
 
 import com.example.ordinaMii.Entity.Enum.OrderStatus;
+import com.example.ordinaMii.Entity.Enum.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,6 +34,9 @@ public class Order {
     @Enumerated(EnumType.STRING)
     @Column(name = "Status", nullable = false)
     private OrderStatus status;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
 
     @ManyToOne
     @JoinColumn(name = "UserId", nullable = false)

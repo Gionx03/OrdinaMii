@@ -28,4 +28,34 @@ public class RestaurantTable {
     @Column(name = "Available", nullable = false)
     private boolean available;
 
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        RestaurantTable other = (RestaurantTable) obj;
+
+        return id != null && id.equals(other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "RestaurantTable{" +
+                "id=" + id +
+                ", number=" + number +
+                ", seats=" + seats +
+                ", available=" + available +
+                '}';
+    }
 }

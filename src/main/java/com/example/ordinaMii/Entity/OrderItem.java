@@ -33,4 +33,35 @@ public class OrderItem {
     @JoinColumn(name = "DishId", nullable = false)
     private Dish dish;
 
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        OrderItem other = (OrderItem) obj;
+
+        return id != null && id.equals(other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+                "id=" + id +
+                ", quantity=" + quantity +
+                ", price=" + unitPrice +
+                ", orderId=" + order.getId() +
+                ", dishId=" +  dish.getId()  +
+                '}';
+    }
 }

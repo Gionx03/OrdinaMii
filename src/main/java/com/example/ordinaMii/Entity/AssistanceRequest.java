@@ -9,34 +9,33 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users")
-public class User {
+public class AssistanceRequest {
     @Id
-    @Column(name= "Id", nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", nullable = false)
     private UUID id;
 
-    @Column(name="Username", nullable = false)
-    private String username;
+    @Column(name = "Message")
+    private String message;
 
-    @Column(name = "Email", nullable = false)
-    private String email;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "Status", nullable = false)
+    private AssistanceRequestStatus status;
 
-
-    @Column(name = "Phone")
-    private String phone;
-
-    @Column(name = "CreatedAt")
+    @Column(name = "CreatedAt", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "UpdatedAt")
-    private  LocalDateTime updatedAt;
+    @Column(name = "ResolvedAt", nullable = false)
+    private LocalDateTime resolvedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "table_id")
+    private RestaurantTable table;
 
     @Override
     public boolean equals(Object obj) {
@@ -48,7 +47,7 @@ public class User {
             return false;
         }
 
-        User other = (User) obj;
+        AssistanceRequest other = (AssistanceRequest) obj;
 
         return id != null && id.equals(other.id);
     }
@@ -60,12 +59,13 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "AssistanceRequest{" +
                 "id=" + id +
-                ", username='" + username +
-                ", email='" + email +
-                ", phone='" + phone +
+                ", message='" + message + "'" +
+                ", status=" + status +
+                ", createdAt=" + createdAt +
+                ", resolvedAt=" + resolvedAt +
+                ", tableId=" + (table != null ? table.getId() : null) +
                 '}';
     }
-
 }

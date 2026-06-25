@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.UUID;
 
@@ -22,11 +23,9 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "ReservationDate", nullable = false)
-    private LocalDate reservationDate;
+    @Column(name = "date", nullable = false)
+    private LocalDateTime date;
 
-    @Column(name = "ReservationTime", nullable = false)
-    private LocalTime reservationTime;
 
     @Column(name = "NumberOfPeople", nullable = false)
     private int numberOfPeople;
@@ -42,4 +41,36 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name = "TableId", nullable = false)
     private RestaurantTable table;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        Reservation other = (Reservation) obj;
+
+        return id != null && id.equals(other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "id=" + id +
+                ", date=" + date +
+                ", numberOfPeople=" + numberOfPeople +
+                ", status=" + status +
+                ", userId=" +  user.getId()  +
+                ", tableId=" + table.getId()  +
+                '}';
+    }
 }
