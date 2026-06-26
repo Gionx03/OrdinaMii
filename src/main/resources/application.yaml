@@ -6,7 +6,7 @@ spring:
     import: optional:classpath:passwords.yaml
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/OrdinaMii
+    url: jdbc:postgresql://localhost:5433/OrdinaMii
     username: ${db.username}
     password: ${db.password}
 
