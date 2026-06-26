@@ -30,7 +30,7 @@ public class AssistanceRequest {
     @Column(name = "CreatedAt", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "ResolvedAt", nullable = false)
+    @Column(name = "ResolvedAt")
     private LocalDateTime resolvedAt;
 
     @ManyToOne

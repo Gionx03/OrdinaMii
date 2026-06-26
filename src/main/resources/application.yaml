@@ -1,3 +1,22 @@
 spring:
   application:
-    name: OrdinaMii
+    name: ordinaMii
+
+  config:
+    import: optional:classpath:passwords.yaml
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/OrdinaMii
+    username: ${db.username}
+    password: ${db.password}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: 8080
