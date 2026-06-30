@@ -13,8 +13,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS restaurant_table (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     number INTEGER NOT NULL,
-    seats INTEGER NOT NULL,
-    available BOOLEAN NOT NULL
+    seats INTEGER NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS dish (

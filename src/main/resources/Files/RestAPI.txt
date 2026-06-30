@@ -33,7 +33,7 @@ Descrizione: elimina un piatto.
 Ruolo: admin/staff
 
 
-TABLES - TAVOLI
+TABLES
 
 
 GET /tables
@@ -92,7 +92,7 @@ Descrizione: elimina un ordine.
 Ruolo: admin
 
 
-ASSISTANCE REQUESTS - RICHIESTE DI ASSISTENZA
+ASSISTANCE REQUESTS
 
 GET /assistance-requests
 Descrizione: ottiene tutte le richieste di assistenza.
@@ -112,7 +112,7 @@ Descrizione: aggiorna lo stato di una richiesta di assistenza.
 Ruolo: admin, waiter
 
 
-USER AREA - AREA UTENTE
+USER AREA
 
 
 GET /me
@@ -126,5 +126,47 @@ Descrizione: ottiene gli ordini dell'utente autenticato.
 Ruolo: customer
 
 
+RESERVATIONS
 
+
+GET /reservations
+Query params:
+- status: cerca le prenotazioni per stato
+- user_id: cerca le prenotazioni di un utente
+- table_id: cerca le prenotazioni di un tavolo
+- data: cerca le prenotazioni per una determinata data
+Descrizione: ottiene tutte le prenotazioni oppure le filtra tramite query param.
+Ruolo: admin, waiter
+
+
+GET /reservations/{id}
+Descrizione: ottiene una singola prenotazione tramite id.
+Ruolo: admin, waiter
+
+
+GET /reservations/table/{tableId}
+Query params:
+- data: cerca le prenotazioni di quel tavolo per una determinata data
+Descrizione: ottiene le prenotazioni associate a un tavolo.
+Ruolo: admin, waiter
+
+
+POST /reservations
+Descrizione: crea una nuova prenotazione.
+Ruolo: customer, admin, waiter
+
+
+PUT /reservations/{id}
+Descrizione: modifica una prenotazione esistente.
+Ruolo: admin, waiter
+
+
+PUT /reservations/{id}/status
+Descrizione: aggiorna lo stato di una prenotazione.
+Ruolo: admin, waiter
+
+
+DELETE /reservations/{id}
+Descrizione: elimina una prenotazione.
+Ruolo: admin
 
