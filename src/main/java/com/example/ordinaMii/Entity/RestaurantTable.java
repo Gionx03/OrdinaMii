@@ -10,12 +10,10 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class RestaurantTable {
     @Id
     @Column(name = "Id", nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
-    @EqualsAndHashCode.Include
     private UUID id;
 
     @Column(name = "Number", nullable = false, unique = true)
@@ -24,9 +22,24 @@ public class RestaurantTable {
     @Column(name = "Seats", nullable = false)
     private int seats;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        var table = (RestaurantTable) o;
 
+        if (id == null || table.id == null) {
+            return false;
+        }
 
+        return id.equals(table.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return (id != null ? id.hashCode() : System.identityHashCode(this));
+    }
 
     @Override
     public String toString() {

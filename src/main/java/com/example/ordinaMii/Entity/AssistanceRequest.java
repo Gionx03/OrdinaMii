@@ -11,13 +11,11 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 
 public class AssistanceRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
-    @EqualsAndHashCode.Include
     private UUID id;
 
     @Column(name = "Message")
@@ -36,6 +34,25 @@ public class AssistanceRequest {
     @ManyToOne
     @JoinColumn(name = "table_id")
     private RestaurantTable table;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        var a = (AssistanceRequest) o;
+
+        if (id == null || a.id == null) {
+            return false;
+        }
+
+        return id.equals(a.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return (id != null ? id.hashCode() : System.identityHashCode(this));
+    }
 
 
     @Override

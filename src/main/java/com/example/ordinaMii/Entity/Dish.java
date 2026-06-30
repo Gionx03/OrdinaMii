@@ -11,12 +11,11 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+
 public class Dish {
     @Id
     @Column(name = "Id", nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
-    @EqualsAndHashCode.Include
     private UUID id;
 
     @Column(name = "Name", nullable = false)
@@ -35,7 +34,24 @@ public class Dish {
     @Column(name = "Category", nullable = false)
     private DishCategory category;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        var d = (Dish) o;
+
+        if (id == null || d.id == null) {
+            return false;
+        }
+
+        return id.equals(d.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return (id != null ? id.hashCode() : System.identityHashCode(this));
+    }
 
     @Override
     public String toString() {

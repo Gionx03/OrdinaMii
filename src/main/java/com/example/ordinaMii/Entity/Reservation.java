@@ -15,12 +15,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"table_id", "date", "time"}))
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Reservation {
     @Id
     @Column(name = "Id", nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
-    @EqualsAndHashCode.Include
     private UUID id;
 
     @Column(name = "data", nullable = false)
@@ -45,6 +43,25 @@ public class Reservation {
     @JoinColumn(name = "TableId", nullable = false)
     private RestaurantTable table;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        var r = (Reservation) o;
+
+        if (id == null || r.id == null) {
+            return false;
+        }
+
+        return id.equals(r.id);
+    }
+
+
+    @Override
+    public int hashCode() {
+        return (id != null ? id.hashCode() : System.identityHashCode(this));
+    }
 
 
     @Override

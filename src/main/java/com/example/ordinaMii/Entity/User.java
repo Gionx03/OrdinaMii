@@ -13,11 +13,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
     @Id
     @Column(name= "Id", nullable = false)
-    @EqualsAndHashCode.Include
     private UUID id;
 
     @Column(name="Username", nullable = false)
@@ -36,6 +34,25 @@ public class User {
     @Column(name = "UpdatedAt")
     private  LocalDateTime updatedAt;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        if (id == null || user.id == null) {
+            return false;
+        }
+
+        return id.equals(user.id);
+    }
+
+
+    @Override
+    public int hashCode() {
+        return (id != null ? id.hashCode() : System.identityHashCode(this));
+    }
 
 
     @Override

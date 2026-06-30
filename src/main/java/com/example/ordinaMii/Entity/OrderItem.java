@@ -10,12 +10,10 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class OrderItem {
     @Id
     @Column(name = "Id", nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
-    @EqualsAndHashCode.Include
     private UUID id;
 
     @Column(name = "Quantity", nullable = false)
@@ -32,7 +30,24 @@ public class OrderItem {
     @JoinColumn(name = "DishId", nullable = false)
     private Dish dish;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        var or = (OrderItem) o;
+
+        if (id == null || or.id == null) {
+            return false;
+        }
+
+        return id.equals(or.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return (id != null ? id.hashCode() : System.identityHashCode(this));
+    }
 
 
     @Override

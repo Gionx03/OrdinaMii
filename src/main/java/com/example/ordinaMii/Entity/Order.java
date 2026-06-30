@@ -16,12 +16,11 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Order {
+
     @Id
     @Column(name = "Id", nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
-    @EqualsAndHashCode.Include
     private UUID id;
 
     @Column(name = "OrderDate", nullable = false)
@@ -45,5 +44,37 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "UserId", nullable = false)
     private User user;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        var or = (Order) o;
+
+        if (id == null || or.id == null) {
+            return false;
+        }
+
+        return id.equals(or.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return (id != null ? id.hashCode() : System.identityHashCode(this));
+    }
+
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", orderDate=" + orderDate +
+                ", total=" + total +
+                ", status=" + status +
+                ", paymentStatus=" + paymentStatus +
+                ", role=" + role +
+                ", user=" + user.getId() +
+                '}';
+    }
 
 }
