@@ -5,7 +5,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8081/realms/ristorante-realm
+          issuer-uri: http://localhost:8081/realms/OrdinaMii
 
   datasource:
     url: jdbc:postgresql://localhost:5433/OrdinaMii
