@@ -17,6 +17,11 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"table_id", "date"})
+        }
+)
 public class Reservation {
     @Id
     @Column(name = "Id", nullable = false)

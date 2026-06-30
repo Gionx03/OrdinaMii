@@ -19,7 +19,7 @@ public class RestaurantTable {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "Number", nullable = false)
+    @Column(name = "Number", nullable = false, unique = true)
     private int number;
 
     @Column(name = "Seats", nullable = false)

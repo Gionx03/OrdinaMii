@@ -4,7 +4,7 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     username VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
     phone VARCHAR(50),
     created_at TIMESTAMP,
     updated_at TIMESTAMP
@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS reservation (
     CONSTRAINT fk_reservation_table
         FOREIGN KEY (table_id)
         REFERENCES restaurant_table(id),
+    CONSTRAINT uk_table_date UNIQUE (table_id, date)
 
     CONSTRAINT chk_reservation_status CHECK (status IN ('CONFIRMED', 'CANCELLED', 'COMPLETED'))
 );
