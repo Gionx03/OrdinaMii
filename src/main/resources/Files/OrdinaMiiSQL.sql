@@ -1,99 +1,113 @@
 
-CREATE EXTENSION IF NOT EXISTS "pgcrypto";
-
 CREATE TABLE IF NOT EXISTS users (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    username VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    phone VARCHAR(50),
+    id UUID PRIMARY KEY,
+
+    username VARCHAR(100) NOT NULL UNIQUE,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    phone VARCHAR(30),
+
+    role VARCHAR(30) NOT NULL,
+
     created_at TIMESTAMP,
     updated_at TIMESTAMP
-);
+    );
 
-CREATE TABLE IF NOT EXISTS restaurant_table (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    number INTEGER NOT NULL,
-    seats INTEGER NOT NULL
-);
 
 CREATE TABLE IF NOT EXISTS dish (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name VARCHAR(255) NOT NULL,
+
+    name VARCHAR(150) NOT NULL,
     description TEXT,
-    price DOUBLE PRECISION NOT NULL,
-    available BOOLEAN NOT NULL,
-    category VARCHAR(50) NOT NULL,
-    CONSTRAINT chk_dish_category CHECK (category IN ('ANTIPASTO', 'PRIMO', 'SECONDO', 'CONTORNO', 'DOLCE', 'BEVANDE'))
+    price NUMERIC(10,2) NOT NULL,
+    available BOOLEAN NOT NULL DEFAULT TRUE,
+
+    category VARCHAR(50) NOT NULL
+    );
+
+
+CREATE TABLE IF NOT EXISTS restaurant_table (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    number INTEGER NOT NULL UNIQUE,
+    seats INTEGER NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS reservation (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    date TIMESTAMP NOT NULL,
+   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+   date DATE NOT NULL,
+    time TIME NOT NULL,
+
     number_of_people INTEGER NOT NULL,
-    status VARCHAR(50) NOT NULL,
+    status VARCHAR(30) NOT NULL,
+
     user_id UUID NOT NULL,
     table_id UUID NOT NULL,
 
     CONSTRAINT fk_reservation_user
-        FOREIGN KEY (user_id)
-        REFERENCES users(id),
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE,
 
     CONSTRAINT fk_reservation_table
-        FOREIGN KEY (table_id)
-        REFERENCES restaurant_table(id),
-    CONSTRAINT uk_table_date UNIQUE (table_id, date)
+    FOREIGN KEY (table_id)
+    REFERENCES restaurant_table(id)
+    ON DELETE CASCADE,
 
-    CONSTRAINT chk_reservation_status CHECK (status IN ('CONFIRMED', 'CANCELLED', 'COMPLETED'))
-);
+    CONSTRAINT uk_table_date_time UNIQUE (table_id, date, time)
+    );
+
 
 CREATE TABLE IF NOT EXISTS orders (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
     order_date TIMESTAMP NOT NULL,
-    total NUMERIC(10, 2) NOT NULL,
-    status VARCHAR(50) NOT NULL,
-    payment_status VARCHAR(50),
+    total NUMERIC(10,2),
+
+    status VARCHAR(30) NOT NULL,
+    payment_status VARCHAR(30) NOT NULL,
+
     user_id UUID NOT NULL,
     reservation_id UUID,
 
     CONSTRAINT fk_order_user
-        FOREIGN KEY (user_id)
-        REFERENCES users(id),
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE,
 
     CONSTRAINT fk_order_reservation
-        FOREIGN KEY (reservation_id)
-        REFERENCES reservation(id),
+    FOREIGN KEY (reservation_id)
+    REFERENCES reservation(id)
+    ON DELETE SET NULL
+    );
 
-    CONSTRAINT chk_order_status CHECK (status IN ('PENDING', 'PREPARING', 'SERVED', 'PAID', 'CANCELLED')),
-    CONSTRAINT chk_payment_status CHECK (payment_status IS NULL OR payment_status IN ('NOT_PAID', 'PENDING', 'PAID', 'PAY_AT_COUNTER', 'CANCELLED'))
-);
 
 CREATE TABLE IF NOT EXISTS order_item (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
     quantity INTEGER NOT NULL,
-    unit_price DOUBLE PRECISION NOT NULL,
+    unit_price NUMERIC(10,2) NOT NULL,
+
     order_id UUID NOT NULL,
     dish_id UUID NOT NULL,
 
-    CONSTRAINT fk_order_item_order
-        FOREIGN KEY (order_id)
-        REFERENCES orders(id),
+    CONSTRAINT fk_item_order
+    FOREIGN KEY (order_id)
+    REFERENCES orders(id)
+    ON DELETE CASCADE,
 
-    CONSTRAINT fk_order_item_dish
-        FOREIGN KEY (dish_id)
-        REFERENCES dish(id)
-);
+    CONSTRAINT fk_item_dish
+    FOREIGN KEY (dish_id)
+    REFERENCES dish(id)
+    );
+
 
 CREATE TABLE IF NOT EXISTS assistance_request (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    message TEXT,
-    status VARCHAR(50) NOT NULL,
-    created_at TIMESTAMP NOT NULL,
-    resolved_at TIMESTAMP,
-    table_id UUID,
 
-    CONSTRAINT fk_assistance_request_table
-        FOREIGN KEY (table_id)
-        REFERENCES restaurant_table(id),
+    message TEXT NOT NULL,
 
-    CONSTRAINT chk_assistance_request_status CHECK (status IN ('PENDING', 'RESOLVED', 'CANCELLED'))
-);
+    status VARCHAR(30) NOT NULL,
+
+    created_at TIMESTAMP
+    );

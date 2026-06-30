@@ -2,10 +2,7 @@ package com.example.ordinaMii.Entity;
 
 import com.example.ordinaMii.Entity.Enum.ReservationStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,19 +14,20 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"table_id", "date"})
-        }
-)
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"table_id", "date", "time"}))
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Reservation {
     @Id
     @Column(name = "Id", nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
+    @EqualsAndHashCode.Include
     private UUID id;
 
-    @Column(name = "date", nullable = false)
-    private LocalDateTime date;
+    @Column(name = "data", nullable = false)
+    private LocalDate date;
+
+    @Column(name="ora",  nullable = false)
+    private LocalTime time;
 
 
     @Column(name = "NumberOfPeople", nullable = false)
@@ -47,31 +45,14 @@ public class Reservation {
     @JoinColumn(name = "TableId", nullable = false)
     private RestaurantTable table;
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
 
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-
-        Reservation other = (Reservation) obj;
-
-        return id != null && id.equals(other.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 
     @Override
     public String toString() {
         return "Reservation{" +
                 "id=" + id +
                 ", date=" + date +
+                ", time=" + time +
                 ", numberOfPeople=" + numberOfPeople +
                 ", status=" + status +
                 ", userId=" +  user.getId()  +

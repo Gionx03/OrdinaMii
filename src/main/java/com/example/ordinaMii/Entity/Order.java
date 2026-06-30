@@ -2,11 +2,9 @@ package com.example.ordinaMii.Entity;
 
 import com.example.ordinaMii.Entity.Enum.OrderStatus;
 import com.example.ordinaMii.Entity.Enum.PaymentStatus;
+import com.example.ordinaMii.Entity.Enum.Roles;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -18,11 +16,12 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Order {
     @Id
     @Column(name = "Id", nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
+    @EqualsAndHashCode.Include
     private UUID id;
 
     @Column(name = "OrderDate", nullable = false)
@@ -36,13 +35,15 @@ public class Order {
     private OrderStatus status;
 
     @Enumerated(EnumType.STRING)
+    @Column(name="paymentStatus", nullable = false)
     private PaymentStatus paymentStatus;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="role", nullable = false)
+    private Roles role;
 
     @ManyToOne
     @JoinColumn(name = "UserId", nullable = false)
     private User user;
 
-    @OneToOne
-    @JoinColumn(name = "ReservationId")
-    private Reservation reservation;
 }

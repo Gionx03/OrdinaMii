@@ -2,10 +2,7 @@ package com.example.ordinaMii.Entity;
 
 import com.example.ordinaMii.Entity.Enum.AssistanceRequestStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -16,10 +13,11 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
     @Id
     @Column(name= "Id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @EqualsAndHashCode.Include
     private UUID id;
 
     @Column(name="Username", nullable = false)
@@ -38,25 +36,7 @@ public class User {
     @Column(name = "UpdatedAt")
     private  LocalDateTime updatedAt;
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
 
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-
-        User other = (User) obj;
-
-        return id != null && id.equals(other.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 
     @Override
     public String toString() {

@@ -2,10 +2,7 @@ package com.example.ordinaMii.Entity;
 
 import com.example.ordinaMii.Entity.Enum.DishCategory;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -14,10 +11,12 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Dish {
     @Id
     @Column(name = "Id", nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
+    @EqualsAndHashCode.Include
     private UUID id;
 
     @Column(name = "Name", nullable = false)
@@ -36,25 +35,7 @@ public class Dish {
     @Column(name = "Category", nullable = false)
     private DishCategory category;
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
 
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-
-        Dish other = (Dish) obj;
-
-        return id != null && id.equals(other.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 
     @Override
     public String toString() {
