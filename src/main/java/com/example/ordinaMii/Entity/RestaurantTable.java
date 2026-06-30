@@ -25,8 +25,6 @@ public class RestaurantTable {
     @Column(name = "Seats", nullable = false)
     private int seats;
 
-    @Column(name = "Available", nullable = false)
-    private boolean available;
 
 
     @Override
@@ -55,7 +53,6 @@ public class RestaurantTable {
                 "id=" + id +
                 ", number=" + number +
                 ", seats=" + seats +
-                ", available=" + available +
                 '}';
     }
 }
