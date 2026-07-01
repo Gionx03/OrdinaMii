@@ -1,6 +1,10 @@
 spring:
   application:
     name: OrdinaMii
+
+  config:
+    import: optional:classpath:passwords.yaml
+
   security:
     oauth2:
       resourceserver:
@@ -22,3 +26,20 @@ spring:
 
 server:
   port: 8080
+
+logging:
+  file:
+    name: logs/ordinamii.log
+
+  level:
+    root: info
+    com.example.ordinaMii: debug
+    org.springframework.security: info
+    org.hibernate.SQL: warn
+
+  logback:
+    rollingpolicy:
+      file-name-pattern: logs/ordinamii-%d{yyyy-MM-dd}.%i.log.gz
+      max-file-size: 10MB
+      max-history: 7
+      total-size-cap: 100MB

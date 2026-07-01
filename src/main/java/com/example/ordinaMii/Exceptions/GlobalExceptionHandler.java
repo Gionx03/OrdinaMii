@@ -1,6 +1,7 @@
 package com.example.ordinaMii.Exceptions;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
-
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
@@ -16,6 +17,11 @@ public class GlobalExceptionHandler {
             ResourceNotFoundException exception,
             HttpServletRequest request
     ) {
+        log.warn("Risorsa non trovata. Path: {}, messaggio: {}",
+                request.getRequestURI(),
+                exception.getMessage()
+        );
+
         ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND.value(),
@@ -32,6 +38,11 @@ public class GlobalExceptionHandler {
             BadRequestException exception,
             HttpServletRequest request
     ) {
+        log.warn("Richiesta non valida. Path: {}, messaggio: {}",
+                request.getRequestURI(),
+                exception.getMessage()
+        );
+
         ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
@@ -48,6 +59,11 @@ public class GlobalExceptionHandler {
             ConflictException exception,
             HttpServletRequest request
     ) {
+        log.warn("Conflitto nella richiesta. Path: {}, messaggio: {}",
+                request.getRequestURI(),
+                exception.getMessage()
+        );
+
         ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.CONFLICT.value(),
@@ -60,24 +76,33 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex,
-                                                          HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handleValidation(
+            MethodArgumentNotValidException exception,
+            HttpServletRequest request
+    ) {
+        StringBuilder message = new StringBuilder();
 
-        String message = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .reduce("", (a, b) -> a + b + "; ");
+        for (int i = 0; i < exception.getBindingResult().getFieldErrors().size(); i++) {
+            message.append(exception.getBindingResult().getFieldErrors().get(i).getField())
+                    .append(": ")
+                    .append(exception.getBindingResult().getFieldErrors().get(i).getDefaultMessage())
+                    .append("; ");
+        }
 
-        ErrorResponse error = new ErrorResponse(
+        log.warn("Errore di validazione. Path: {}, messaggio: {}",
+                request.getRequestURI(),
+                message
+        );
+
+        ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
-                400,
-                "Bad Request",
-                message,
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                message.toString(),
                 request.getRequestURI()
         );
 
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
 
@@ -86,6 +111,12 @@ public class GlobalExceptionHandler {
             Exception exception,
             HttpServletRequest request
     ) {
+        log.error("Errore interno del server. Path: {}",
+                request.getRequestURI(),
+                exception
+        );
+
+
         ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
