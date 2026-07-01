@@ -50,7 +50,7 @@ public class Dish {
 
     @Override
     public int hashCode() {
-        return (id != null ? id.hashCode() : System.identityHashCode(this));
+        return getClass().hashCode();
     }
 
     @Override
