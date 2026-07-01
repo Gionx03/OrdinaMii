@@ -1,6 +1,7 @@
 package com.example.ordinaMii.Entity;
 
 import com.example.ordinaMii.Entity.Enum.AssistanceRequestStatus;
+import com.example.ordinaMii.Entity.Enum.Roles;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,6 +25,9 @@ public class User {
     @Column(name = "Email", nullable = false,unique = true)
     private String email;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name="role", nullable = false)
+    private Roles role;
 
     @Column(name = "Phone")
     private String phone;
@@ -59,6 +63,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
+                ", role=" + role +
                 ", username='" + username +
                 ", email='" + email +
                 ", phone='" + phone +

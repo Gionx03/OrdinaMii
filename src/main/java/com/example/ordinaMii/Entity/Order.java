@@ -37,9 +37,6 @@ public class Order {
     @Column(name="paymentStatus", nullable = false)
     private PaymentStatus paymentStatus;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name="role", nullable = false)
-    private Roles role;
 
     @ManyToOne
     @JoinColumn(name = "UserId", nullable = false)
@@ -72,7 +69,6 @@ public class Order {
                 ", total=" + total +
                 ", status=" + status +
                 ", paymentStatus=" + paymentStatus +
-                ", role=" + role +
                 ", user=" + user.getId() +
                 '}';
     }
