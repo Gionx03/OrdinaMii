@@ -1,13 +1,42 @@
 package com.example.ordinaMii.Services;
 
+import com.example.ordinaMii.DTO.Request.DishRequestDTO;
+import com.example.ordinaMii.Entity.Enum.DishCategory;
 import com.example.ordinaMii.Repository.DishRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import com.example.ordinaMii.DTO.Response.DishResponseDTO;
+
+import java.util.List;
+import java.util.UUID;
+
 @Slf4j
 @Service
 public class DishService {
+
     private final DishRepository dishRepository;
+
     public DishService(DishRepository dishRepository) {
         this.dishRepository = dishRepository;
+    }
+
+    public List<DishResponseDTO> getDishes(DishCategory category, String name, String descr) {
+        throw new UnsupportedOperationException("Metodo da implementare");
+    }
+
+    public DishResponseDTO getDishById(UUID id) {
+        throw new UnsupportedOperationException("Metodo da implementare");
+    }
+
+    public DishResponseDTO createDish(DishRequestDTO dishRequestDTO) {
+        throw new UnsupportedOperationException("Metodo da implementare");
+    }
+
+    public DishResponseDTO updateDish(UUID id, DishRequestDTO dishRequestDTO) {
+        throw new UnsupportedOperationException("Metodo da implementare");
+    }
+
+    public void deleteDish(UUID id) {
+        throw new UnsupportedOperationException("Metodo da implementare");
     }
 }
