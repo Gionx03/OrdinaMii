@@ -4,6 +4,9 @@ import com.example.ordinaMii.DTO.Request.RestaurantTableRequestDTO;
 import com.example.ordinaMii.DTO.Response.RestaurantTableResponseDTO;
 import com.example.ordinaMii.Services.RestaurantTableService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +25,9 @@ public class RestaurantTableController {
     }
 
     @GetMapping
-    public ResponseEntity<List<RestaurantTableResponseDTO>> getTables() {
-        List<RestaurantTableResponseDTO> tables = restaurantTableService.getTables();
+    public ResponseEntity<Page<RestaurantTableResponseDTO>> getTables(
+            @PageableDefault(size = 10, sort = "number") Pageable pageable) {
+        Page<RestaurantTableResponseDTO> tables = restaurantTableService.getTables(pageable);
         return ResponseEntity.ok(tables);
     }
 

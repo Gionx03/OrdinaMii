@@ -5,6 +5,8 @@ import com.example.ordinaMii.DTO.Response.RestaurantTableResponseDTO;
 import com.example.ordinaMii.Repository.RestaurantTableRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +22,7 @@ public class RestaurantTableService {
         this.restaurantTableRepository = restaurantTableRepository;
     }
 
-    public List<RestaurantTableResponseDTO> getTables() {
+    public Page<RestaurantTableResponseDTO> getTables(Pageable pageable) {
         throw new UnsupportedOperationException("Metodo da implementare");
     }
 

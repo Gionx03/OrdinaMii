@@ -5,6 +5,9 @@ import com.example.ordinaMii.DTO.Response.UserResponseDTO;
 import com.example.ordinaMii.Entity.Enum.OrderStatus;
 import com.example.ordinaMii.Services.OrderService;
 import com.example.ordinaMii.Services.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -35,13 +38,14 @@ public class UserController {
     }
 
     @GetMapping("/orders")
-    public ResponseEntity<List<OrderResponseDTO>> getMyOrders(
+    public ResponseEntity<Page<OrderResponseDTO>> getMyOrders(
             @AuthenticationPrincipal Jwt jwt,
             @RequestParam(required = false) OrderStatus status,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data) {
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data,
+            @PageableDefault(size = 10, sort = "orderDate") Pageable pageable) {
 
         UUID userId = UUID.fromString(jwt.getSubject());
-        List<OrderResponseDTO> orders = orderService.getMyOrders(userId, status, data);
+        Page<OrderResponseDTO> orders = orderService.getMyOrders(userId, status, data,pageable);
         return ResponseEntity.ok(orders);
     }
 }

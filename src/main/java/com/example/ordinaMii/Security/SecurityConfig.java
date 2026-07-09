@@ -14,7 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SecurityConfig {
     //non ricordo il CLient ID su keycloak
-    private static final String CLIENT_ID = "";//TODO
+    private static final String CLIENT_ID = "OrdinaMii-Backend";
     private final SecurityExceptionHandler securityExceptionHandler;
 
     public SecurityConfig(SecurityExceptionHandler securityExceptionHandler) {

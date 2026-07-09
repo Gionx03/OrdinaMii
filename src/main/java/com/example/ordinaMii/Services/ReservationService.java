@@ -6,6 +6,8 @@ import com.example.ordinaMii.DTO.Response.ReservationResponseDTO;
 import com.example.ordinaMii.Entity.Enum.ReservationStatus;
 import com.example.ordinaMii.Repository.ReservationRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,11 +24,12 @@ public class ReservationService {
         this.reservationRepository = reservationRepository;
     }
 
-    public List<ReservationResponseDTO> getReservations(
+    public Page<ReservationResponseDTO> getReservations(
             ReservationStatus status,
             UUID userId,
             UUID tableId,
-            LocalDate data) {
+            LocalDate data,
+            Pageable pageable) {
 
         throw new UnsupportedOperationException("Metodo da implementare");
     }

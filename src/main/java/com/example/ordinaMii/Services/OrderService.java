@@ -6,6 +6,8 @@ import com.example.ordinaMii.DTO.Response.OrderResponseDTO;
 import com.example.ordinaMii.Entity.Enum.OrderStatus;
 import com.example.ordinaMii.Repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -30,7 +32,7 @@ public class OrderService {
         throw new UnsupportedOperationException("Metodo da implementare");
     }
 
-    public List<OrderResponseDTO> getOrdersByTable(UUID tableId, LocalDate data) {
+    public Page<OrderResponseDTO> getOrdersByTable(UUID tableId, LocalDate data,Pageable pageable) {
         throw new UnsupportedOperationException("Metodo da implementare");
     }
 
@@ -50,7 +52,7 @@ public class OrderService {
         throw new UnsupportedOperationException("Metodo da implementare");
     }
 
-    public List<OrderResponseDTO> getMyOrders(UUID userId, OrderStatus status, LocalDate data) {
+    public Page<OrderResponseDTO> getMyOrders(UUID userId, OrderStatus status, LocalDate data, Pageable pageable) {
         throw new UnsupportedOperationException("Metodo da implementare");
     }
 }

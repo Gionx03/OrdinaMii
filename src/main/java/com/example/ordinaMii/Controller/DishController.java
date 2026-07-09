@@ -5,6 +5,9 @@ import com.example.ordinaMii.DTO.Response.DishResponseDTO;
 import com.example.ordinaMii.Entity.Enum.DishCategory;
 import com.example.ordinaMii.Services.DishService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,12 +26,13 @@ public class DishController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DishResponseDTO>> getDishes(
+    public ResponseEntity<Page<DishResponseDTO>> getDishes(
             @RequestParam(required = false) DishCategory category,
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) String descr) {
+            @RequestParam(required = false) String descr,
+            @PageableDefault(size = 10, sort = "name") Pageable pageable) {
 
-        List<DishResponseDTO> dishes = dishService.getDishes(category, name, descr);
+        Page<DishResponseDTO> dishes = dishService.getDishes(category, name, descr,pageable);
         return ResponseEntity.ok(dishes);
     }
 

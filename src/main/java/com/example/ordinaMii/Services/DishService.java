@@ -4,6 +4,8 @@ import com.example.ordinaMii.DTO.Request.DishRequestDTO;
 import com.example.ordinaMii.Entity.Enum.DishCategory;
 import com.example.ordinaMii.Repository.DishRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.example.ordinaMii.DTO.Response.DishResponseDTO;
 
@@ -20,7 +22,12 @@ public class DishService {
         this.dishRepository = dishRepository;
     }
 
-    public List<DishResponseDTO> getDishes(DishCategory category, String name, String descr) {
+    public Page<DishResponseDTO> getDishes(
+            DishCategory category,
+            String name,
+            String descr,
+            Pageable pageable) {
+
         throw new UnsupportedOperationException("Metodo da implementare");
     }
 

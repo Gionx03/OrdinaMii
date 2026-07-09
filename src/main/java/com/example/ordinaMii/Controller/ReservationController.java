@@ -6,6 +6,9 @@ import com.example.ordinaMii.DTO.Response.ReservationResponseDTO;
 import com.example.ordinaMii.Entity.Enum.ReservationStatus;
 import com.example.ordinaMii.Services.ReservationService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,14 +29,15 @@ public class ReservationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ReservationResponseDTO>> getReservations(
+    public ResponseEntity<Page<ReservationResponseDTO>> getReservations(
             @RequestParam(required = false) ReservationStatus status,
             @RequestParam(name = "user_id", required = false) UUID userId,
             @RequestParam(name = "table_id", required = false) UUID tableId,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data) {
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data,
+            @PageableDefault(size = 10, sort = "date") Pageable pageable) {
 
-        List<ReservationResponseDTO> reservations =
-                reservationService.getReservations(status, userId, tableId, data);
+        Page<ReservationResponseDTO> reservations =
+                reservationService.getReservations(status, userId, tableId, data,pageable);
 
         return ResponseEntity.ok(reservations);
     }

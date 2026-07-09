@@ -1,6 +1,9 @@
 package com.example.ordinaMii.Repository;
 
+import com.example.ordinaMii.Entity.Enum.ReservationStatus;
 import com.example.ordinaMii.Entity.Reservation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,17 +15,19 @@ import java.util.UUID;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, UUID> {
-    @Query(value = """
-            SELECT *
-            FROM reservation r
-            WHERE (:userId IS NULL OR r.user_id = :userId)
-            AND (:tableId IS NULL OR r.table_id = :tableId)
-            AND (:status IS NULL OR r.status = :status)
-            AND (:data IS NULL OR CAST(r.date AS DATE) = :data)
-            ORDER BY r.date DESC
-            """, nativeQuery = true)
-    List<Reservation> searchReservations(@Param("userId") UUID userId,
-                                         @Param("tableId") UUID tableId,
-                                         @Param("status") String status,
-                                         @Param("data") LocalDate data);
+    @Query("""
+            SELECT r
+            FROM Reservation r
+            WHERE (:status IS NULL OR r.status = :status)
+            AND (:userId IS NULL OR r.user.id = :userId)
+            AND (:tableId IS NULL OR r.table.id = :tableId)
+            AND (:date IS NULL OR r.date = :date)
+            """)
+    Page<Reservation> searchReservations(
+            @Param("status") ReservationStatus status,
+            @Param("userId") UUID userId,
+            @Param("tableId") UUID tableId,
+            @Param("date") LocalDate date,
+            Pageable pageable
+    );
 }
