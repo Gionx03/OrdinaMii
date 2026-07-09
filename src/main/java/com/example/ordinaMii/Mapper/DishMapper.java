@@ -73,18 +73,4 @@ public class DishMapper {
                 .build();
     }
 
-    public List<DishResponseDTO> toResponseDTOList(List<Dish> dishes) {
-
-        List<DishResponseDTO> dtoList = new ArrayList<>();
-
-        if (dishes == null) {
-            return dtoList;
-        }
-
-        for (Dish dish : dishes) {
-            dtoList.add(toResponseDTO(dish));
-        }
-
-        return dtoList;
-    }
 }
