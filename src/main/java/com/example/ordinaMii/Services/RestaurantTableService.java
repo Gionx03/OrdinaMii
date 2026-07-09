@@ -16,6 +16,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -32,6 +33,7 @@ public class RestaurantTableService {
         this.restaurantTableMapper = restaurantTableMapper;
     }
 
+    @Transactional(readOnly = true)
     @Cacheable(
             value = "tableSearch",
             key = "'list_' + #pageable.pageNumber + '_' + #pageable.pageSize + '_' + #pageable.sort"
@@ -45,6 +47,8 @@ public class RestaurantTableService {
         return tables.map(restaurantTableMapper::toResponseDTO);
     }
 
+
+    @Transactional(readOnly = true)
     @Cacheable(value = "tableById", key = "#id")
     public RestaurantTableResponseDTO getTableById(UUID id) {
 
@@ -56,7 +60,7 @@ public class RestaurantTableService {
         return restaurantTableMapper.toResponseDTO(table);
     }
 
-
+    @Transactional
     @Caching(
             evict = {
                     @CacheEvict(value = "tableSearch", allEntries = true)
@@ -82,6 +86,8 @@ public class RestaurantTableService {
         return restaurantTableMapper.toResponseDTO(savedTable);
     }
 
+
+    @Transactional
     @Caching(
             evict = {
                     @CacheEvict(value = "tableSearch", allEntries = true)
@@ -110,6 +116,8 @@ public class RestaurantTableService {
         return restaurantTableMapper.toResponseDTO(updatedTable);
     }
 
+
+    @Transactional
     @Caching(
             evict = {
                     @CacheEvict(value = "tableById", key = "#id"),

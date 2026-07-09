@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.example.ordinaMii.DTO.Response.DishResponseDTO;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,7 +31,7 @@ public class DishService {
         this.dishRepository = dishRepository;
         this.dishMapper = dishMapper;
     }
-
+    @Transactional(readOnly=true)
     @Cacheable(
             value = "dishes_search",
             key = "'list_' + #category + '_' + #name + '_' " +
@@ -51,6 +52,8 @@ public class DishService {
         return dishes.map(dishMapper::toResponseDTO);
     }
 
+
+    @Transactional(readOnly=true)
     @Cacheable(value = "dishesById", key = "#id")
 
     public DishResponseDTO getDishById(UUID id) {
@@ -62,6 +65,8 @@ public class DishService {
 
         return dishMapper.toResponseDTO(dish);
     }
+
+    @Transactional()
     @Caching(
             evict = {
                     @CacheEvict(value = "dishSearch", allEntries = true)
@@ -84,6 +89,8 @@ public class DishService {
         return dishMapper.toResponseDTO(savedDish);
     }
 
+
+    @Transactional()
     @Caching(
             evict = {
                     @CacheEvict(value = "dishSearch", allEntries = true)
@@ -109,6 +116,8 @@ public class DishService {
         return dishMapper.toResponseDTO(updatedDish);
     }
 
+
+    @Transactional()
     @Caching(
             evict = {
                     @CacheEvict(value = "dishById", key = "#id"),

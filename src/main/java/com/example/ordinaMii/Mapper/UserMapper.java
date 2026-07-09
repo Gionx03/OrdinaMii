@@ -7,7 +7,6 @@ import com.example.ordinaMii.Entity.User;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -24,6 +23,7 @@ public class UserMapper {
         user.setId(dto.id());
         user.setUsername(dto.username());
         user.setEmail(dto.email());
+        user.setRole(dto.role());
         user.setPhone(dto.phone());
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
@@ -39,6 +39,7 @@ public class UserMapper {
 
         user.setUsername(dto.username());
         user.setEmail(dto.email());
+        user.setRole(dto.role());
         user.setPhone(dto.phone());
         user.setUpdatedAt(LocalDateTime.now());
     }
@@ -53,6 +54,7 @@ public class UserMapper {
                 .id(user.getId())
                 .username(user.getUsername())
                 .email(user.getEmail())
+                .role(user.getRole())
                 .phone(user.getPhone())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
@@ -71,5 +73,4 @@ public class UserMapper {
                 .email(user.getEmail())
                 .build();
     }
-
 }
