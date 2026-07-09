@@ -2,6 +2,7 @@ package com.example.ordinaMii.Services;
 
 import com.example.ordinaMii.DTO.Request.RestaurantTableRequestDTO;
 import com.example.ordinaMii.DTO.Response.RestaurantTableResponseDTO;
+import com.example.ordinaMii.Mapper.RestaurantTableMapper;
 import com.example.ordinaMii.Repository.RestaurantTableRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +18,11 @@ import java.util.UUID;
 public class RestaurantTableService {
 
     private final RestaurantTableRepository restaurantTableRepository;
+    private final RestaurantTableMapper restaurantTableMapper;
 
-    public RestaurantTableService(RestaurantTableRepository restaurantTableRepository) {
+    public RestaurantTableService(RestaurantTableRepository restaurantTableRepository, RestaurantTableMapper restaurantTableMapper) {
         this.restaurantTableRepository = restaurantTableRepository;
+        this.restaurantTableMapper = restaurantTableMapper;
     }
 
     public Page<RestaurantTableResponseDTO> getTables(Pageable pageable) {

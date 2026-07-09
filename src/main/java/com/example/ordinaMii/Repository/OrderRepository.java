@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -33,18 +32,6 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
             Pageable pageable
     );
 
-    @Query(value = """
-            SELECT o.*
-            FROM Orders o
-            INNER JOIN reservation r
-            ON o.reservation_id = r.id
-            WHERE r.table_id = :tableId
-            AND (:data IS NULL OR CAST(o.order_date AS DATE) = :data)
-            ORDER BY o.order_date DESC
-            """, nativeQuery = true)
-    Page<Order> findOrdersByTable(@Param("tableId") UUID tableId,
-                                  @Param("data") LocalDate data,
-                                  Pageable pageable);
 
     @Query(value = """
             SELECT *

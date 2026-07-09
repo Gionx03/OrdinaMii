@@ -6,9 +6,6 @@ import com.example.ordinaMii.DTO.Response.OrderResponseDTO;
 import com.example.ordinaMii.Entity.Enum.OrderStatus;
 import com.example.ordinaMii.Services.OrderService;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,15 +41,6 @@ public class OrderController {
         return ResponseEntity.ok(order);
     }
 
-    @GetMapping("/table/{tableId}")
-    public ResponseEntity<Page<OrderResponseDTO>> getOrdersByTable(
-            @PathVariable UUID tableId,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data,
-            @PageableDefault(size = 10, sort = "orderDate") Pageable pageable) {
-
-        Page<OrderResponseDTO> orders = orderService.getOrdersByTable(tableId, data, pageable);
-        return ResponseEntity.ok(orders);
-    }
 
     @PostMapping
     public ResponseEntity<OrderResponseDTO> createOrder(@Valid @RequestBody OrderRequestDTO orderRequestDTO) {

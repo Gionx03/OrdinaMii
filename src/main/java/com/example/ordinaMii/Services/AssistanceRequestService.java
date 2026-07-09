@@ -4,6 +4,7 @@ import com.example.ordinaMii.DTO.Request.AssistanceRequestDTO;
 import com.example.ordinaMii.DTO.Request.AssistanceRequestStatusUpdateRequestDTO;
 import com.example.ordinaMii.DTO.Response.AssistanceRequestResponseDTO;
 import com.example.ordinaMii.Entity.Enum.AssistanceRequestStatus;
+import com.example.ordinaMii.Mapper.AssistanceRequestMapper;
 import com.example.ordinaMii.Repository.AssistanceRequestRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,9 +17,11 @@ import java.util.UUID;
 public class AssistanceRequestService {
 
     private final AssistanceRequestRepository assistanceRequestRepository;
+    private final AssistanceRequestMapper assistanceRequestMapper;
 
-    public AssistanceRequestService(AssistanceRequestRepository assistanceRequestRepository) {
+    public AssistanceRequestService(AssistanceRequestRepository assistanceRequestRepository, AssistanceRequestMapper assistanceRequestMapper) {
         this.assistanceRequestRepository = assistanceRequestRepository;
+        this.assistanceRequestMapper = assistanceRequestMapper;
     }
 
     public List<AssistanceRequestResponseDTO> getAssistanceRequests(AssistanceRequestStatus status, UUID tableId) {

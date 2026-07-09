@@ -2,6 +2,7 @@ package com.example.ordinaMii.Services;
 
 import com.example.ordinaMii.DTO.Request.DishRequestDTO;
 import com.example.ordinaMii.Entity.Enum.DishCategory;
+import com.example.ordinaMii.Mapper.DishMapper;
 import com.example.ordinaMii.Repository.DishRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -17,9 +18,11 @@ import java.util.UUID;
 public class DishService {
 
     private final DishRepository dishRepository;
+    private final DishMapper dishMapper;
 
-    public DishService(DishRepository dishRepository) {
+    public DishService(DishRepository dishRepository, DishMapper dishMapper) {
         this.dishRepository = dishRepository;
+        this.dishMapper = dishMapper;
     }
 
     public Page<DishResponseDTO> getDishes(

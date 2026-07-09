@@ -69,11 +69,6 @@ GET /orders/{id}
 Descrizione: ottiene un singolo ordine tramite id.
 Ruolo: admin, waiter
 
-GET /orders/table/{tableId}
-Query params:
--data
-Descrizione: ottiene gli ordini associati a un tavolo.
-Ruolo: admin, waiter
 
 POST /orders
 Descrizione: crea un nuovo ordine.

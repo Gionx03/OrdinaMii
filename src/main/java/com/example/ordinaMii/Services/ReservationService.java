@@ -4,6 +4,7 @@ import com.example.ordinaMii.DTO.Request.ReservationRequestDTO;
 import com.example.ordinaMii.DTO.Request.ReservationStatusUpdateRequestDTO;
 import com.example.ordinaMii.DTO.Response.ReservationResponseDTO;
 import com.example.ordinaMii.Entity.Enum.ReservationStatus;
+import com.example.ordinaMii.Mapper.ReservationMapper;
 import com.example.ordinaMii.Repository.ReservationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -19,9 +20,11 @@ import java.util.UUID;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final ReservationMapper reservationMapper;
 
-    public ReservationService(ReservationRepository reservationRepository) {
+    public ReservationService(ReservationRepository reservationRepository, ReservationMapper reservationMapper) {
         this.reservationRepository = reservationRepository;
+        this.reservationMapper = reservationMapper;
     }
 
     public Page<ReservationResponseDTO> getReservations(

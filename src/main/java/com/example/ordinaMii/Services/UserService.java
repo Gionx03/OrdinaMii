@@ -2,6 +2,7 @@ package com.example.ordinaMii.Services;
 
 import com.example.ordinaMii.DTO.Request.UserRequestDTO;
 import com.example.ordinaMii.DTO.Response.UserResponseDTO;
+import com.example.ordinaMii.Mapper.UserMapper;
 import com.example.ordinaMii.Repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,9 +14,11 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
     public UserResponseDTO getUserById(UUID id) {

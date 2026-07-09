@@ -4,6 +4,7 @@ import com.example.ordinaMii.DTO.Request.OrderRequestDTO;
 import com.example.ordinaMii.DTO.Request.OrderStatusUpdateRequestDTO;
 import com.example.ordinaMii.DTO.Response.OrderResponseDTO;
 import com.example.ordinaMii.Entity.Enum.OrderStatus;
+import com.example.ordinaMii.Mapper.OrderMapper;
 import com.example.ordinaMii.Repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -19,9 +20,11 @@ import java.util.UUID;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final OrderMapper orderMapper;
 
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository, OrderMapper orderMapper) {
         this.orderRepository = orderRepository;
+        this.orderMapper = orderMapper;
     }
 
     public List<OrderResponseDTO> getOrders(OrderStatus status, UUID customerId, LocalDate data) {
@@ -32,9 +35,6 @@ public class OrderService {
         throw new UnsupportedOperationException("Metodo da implementare");
     }
 
-    public Page<OrderResponseDTO> getOrdersByTable(UUID tableId, LocalDate data,Pageable pageable) {
-        throw new UnsupportedOperationException("Metodo da implementare");
-    }
 
     public OrderResponseDTO createOrder(OrderRequestDTO orderRequestDTO) {
         throw new UnsupportedOperationException("Metodo da implementare");
