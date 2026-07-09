@@ -54,18 +54,4 @@ public class OrderItemMapper {
                 .build();
     }
 
-    public List<OrderItemResponseDTO> toResponseDTOList(List<OrderItem> orderItems) {
-
-        List<OrderItemResponseDTO> dtoList = new ArrayList<>();
-
-        if (orderItems == null) {
-            return dtoList;
-        }
-
-        for (OrderItem orderItem : orderItems) {
-            dtoList.add(toResponseDTO(orderItem));
-        }
-
-        return dtoList;
-    }
 }

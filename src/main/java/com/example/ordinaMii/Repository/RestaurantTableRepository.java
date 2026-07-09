@@ -9,4 +9,8 @@ import java.util.UUID;
 
 @Repository
 public interface RestaurantTableRepository extends JpaRepository<RestaurantTable, UUID> {
+
+    boolean existsByNumber(int number);
+
+    boolean existsByNumberAndIdNot(int number, UUID id);
 }

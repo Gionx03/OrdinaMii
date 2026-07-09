@@ -48,18 +48,4 @@ public class RestaurantTableMapper {
                 .build();
     }
 
-    public List<RestaurantTableResponseDTO> toResponseDTOList(List<RestaurantTable> tables) {
-
-        List<RestaurantTableResponseDTO> dtoList = new ArrayList<>();
-
-        if (tables == null) {
-            return dtoList;
-        }
-
-        for (RestaurantTable table : tables) {
-            dtoList.add(toResponseDTO(table));
-        }
-
-        return dtoList;
-    }
 }

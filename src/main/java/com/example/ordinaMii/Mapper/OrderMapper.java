@@ -82,18 +82,4 @@ public class OrderMapper {
                 .build();
     }
 
-    public List<OrderResponseDTO> toResponseDTOList(List<Order> orders) {
-
-        List<OrderResponseDTO> dtoList = new ArrayList<>();
-
-        if (orders == null) {
-            return dtoList;
-        }
-
-        for (Order order : orders) {
-            dtoList.add(toResponseDTO(order));
-        }
-
-        return dtoList;
-    }
 }

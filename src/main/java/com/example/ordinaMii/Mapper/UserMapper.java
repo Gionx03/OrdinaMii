@@ -72,18 +72,4 @@ public class UserMapper {
                 .build();
     }
 
-    public List<UserResponseDTO> toResponseDTOList(List<User> users) {
-
-        List<UserResponseDTO> dtoList = new ArrayList<>();
-
-        if (users == null) {
-            return dtoList;
-        }
-
-        for (User user : users) {
-            dtoList.add(toResponseDTO(user));
-        }
-
-        return dtoList;
-    }
 }

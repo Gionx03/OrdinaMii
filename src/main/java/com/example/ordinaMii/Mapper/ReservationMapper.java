@@ -77,18 +77,4 @@ public class ReservationMapper {
                 .build();
     }
 
-    public List<ReservationResponseDTO> toResponseDTOList(List<Reservation> reservations) {
-
-        List<ReservationResponseDTO> dtoList = new ArrayList<>();
-
-        if (reservations == null) {
-            return dtoList;
-        }
-
-        for (Reservation reservation : reservations) {
-            dtoList.add(toResponseDTO(reservation));
-        }
-
-        return dtoList;
-    }
 }

@@ -54,18 +54,4 @@ public class AssistanceRequestMapper {
                 .build();
     }
 
-    public List<AssistanceRequestResponseDTO> toResponseDTOList(List<AssistanceRequest> assistanceRequests) {
-
-        List<AssistanceRequestResponseDTO> dtoList = new ArrayList<>();
-
-        if (assistanceRequests == null) {
-            return dtoList;
-        }
-
-        for (AssistanceRequest assistanceRequest : assistanceRequests) {
-            dtoList.add(toResponseDTO(assistanceRequest));
-        }
-
-        return dtoList;
-    }
 }
