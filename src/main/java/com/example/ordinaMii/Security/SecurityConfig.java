@@ -37,6 +37,7 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                         // PIATTI / MENU
                         .requestMatchers(HttpMethod.GET, "/dishes").permitAll()
