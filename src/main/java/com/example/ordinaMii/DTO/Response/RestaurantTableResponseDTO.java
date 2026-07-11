@@ -8,6 +8,7 @@ import java.util.UUID;
 public record RestaurantTableResponseDTO(
         UUID id,
         int number,
-        int seats
+        int seats,
+        boolean active
 ) {
 }

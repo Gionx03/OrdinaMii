@@ -2,11 +2,13 @@ package com.example.ordinaMii.Mapper;
 
 import com.example.ordinaMii.DTO.Request.OrderRequestDTO;
 import com.example.ordinaMii.DTO.Response.OrderResponseDTO;
-import com.example.ordinaMii.Entity.Enum.OrderStatus;
-import com.example.ordinaMii.Entity.Enum.PaymentStatus;
-import com.example.ordinaMii.Entity.Order;
+import com.example.ordinaMii.Entity.CustomerOrder;
 import com.example.ordinaMii.Entity.OrderItem;
+import com.example.ordinaMii.Entity.RestaurantTable;
 import com.example.ordinaMii.Entity.User;
+import com.example.ordinaMii.Entity.Enum.OrderStatus;
+import com.example.ordinaMii.Entity.Enum.OrderType;
+import com.example.ordinaMii.Entity.Enum.PaymentStatus;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -19,67 +21,93 @@ public class OrderMapper {
 
     private final UserMapper userMapper;
     private final OrderItemMapper orderItemMapper;
+    private final RestaurantTableMapper restaurantTableMapper;
 
     public OrderMapper(UserMapper userMapper,
-                       OrderItemMapper orderItemMapper) {
+                       OrderItemMapper orderItemMapper,
+                       RestaurantTableMapper restaurantTableMapper) {
         this.userMapper = userMapper;
         this.orderItemMapper = orderItemMapper;
+        this.restaurantTableMapper = restaurantTableMapper;
     }
 
-    public Order toEntity(OrderRequestDTO dto,
-                          User user,
-                          BigDecimal total,
-                          OrderStatus status,
-                          PaymentStatus paymentStatus) {
+    public CustomerOrder toEntity(OrderRequestDTO dto,
+                                  User user,
+                                  RestaurantTable table,
+                                  BigDecimal total,
+                                  OrderStatus status,
+                                  PaymentStatus paymentStatus) {
 
         if (dto == null) {
             return null;
         }
 
-        Order order = new Order();
-
-        order.setOrderDate(LocalDateTime.now());
-        order.setTotal(total);
-        order.setStatus(status);
-        order.setPaymentStatus(paymentStatus);
-        order.setUser(user);
-
-        return order;
+        return toEntity(
+                user,
+                table,
+                total,
+                status,
+                paymentStatus,
+                dto.orderType()
+        );
     }
 
-    public OrderResponseDTO toResponseDTO(Order order,
+    public CustomerOrder toEntity(User user,
+                                  RestaurantTable table,
+                                  BigDecimal total,
+                                  OrderStatus status,
+                                  PaymentStatus paymentStatus,
+                                  OrderType orderType) {
+
+        CustomerOrder customerOrder = new CustomerOrder();
+
+        customerOrder.setOrderDate(LocalDateTime.now());
+        customerOrder.setTotal(total);
+        customerOrder.setStatus(status);
+        customerOrder.setPaymentStatus(paymentStatus);
+        customerOrder.setOrderType(orderType);
+        customerOrder.setTable(table);
+        customerOrder.setUser(user);
+
+        return customerOrder;
+    }
+
+    public OrderResponseDTO toResponseDTO(CustomerOrder customerOrder,
                                           List<OrderItem> orderItems) {
 
-        if (order == null) {
+        if (customerOrder == null) {
             return null;
         }
 
         return OrderResponseDTO.builder()
-                .id(order.getId())
-                .orderDate(order.getOrderDate())
-                .total(order.getTotal())
-                .status(order.getStatus())
-                .paymentStatus(order.getPaymentStatus())
-                .user(userMapper.toLightResponseDTO(order.getUser()))
+                .id(customerOrder.getId())
+                .orderDate(customerOrder.getOrderDate())
+                .total(customerOrder.getTotal())
+                .status(customerOrder.getStatus())
+                .paymentStatus(customerOrder.getPaymentStatus())
+                .orderType(customerOrder.getOrderType())
+                .user(userMapper.toLightResponseDTO(customerOrder.getUser()))
+                .table(restaurantTableMapper.toResponseDTO(customerOrder.getTable()))
                 .items(orderItemMapper.toResponseDTOList(orderItems))
                 .build();
     }
 
-    public OrderResponseDTO toResponseDTO(Order order) {
+    public OrderResponseDTO toResponseDTO(CustomerOrder customerOrder) {
 
-        if (order == null) {
+        if (customerOrder == null) {
             return null;
         }
 
         return OrderResponseDTO.builder()
-                .id(order.getId())
-                .orderDate(order.getOrderDate())
-                .total(order.getTotal())
-                .status(order.getStatus())
-                .paymentStatus(order.getPaymentStatus())
-                .user(userMapper.toLightResponseDTO(order.getUser()))
+                .id(customerOrder.getId())
+                .orderDate(customerOrder.getOrderDate())
+                .total(customerOrder.getTotal())
+                .status(customerOrder.getStatus())
+                .paymentStatus(customerOrder.getPaymentStatus())
+                .orderType(customerOrder.getOrderType())
+                .user(userMapper.toLightResponseDTO(customerOrder.getUser()))
+                .table(restaurantTableMapper.toResponseDTO(customerOrder.getTable()))
                 .items(new ArrayList<>())
                 .build();
     }
-
 }

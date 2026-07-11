@@ -18,21 +18,21 @@ public class AssistanceRequest {
     @Column(name = "id", nullable = false)
     private UUID id;
 
-    @Column(name = "Message")
+    @Column(name = "Message",nullable = false)
     private String message;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "Status", nullable = false)
     private AssistanceRequestStatus status;
 
-    @Column(name = "CreatedAt", nullable = false)
+    @Column(name = "Created_At", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "ResolvedAt")
+    @Column(name = "Resolved_At")
     private LocalDateTime resolvedAt;
 
     @ManyToOne
-    @JoinColumn(name = "table_id")
+    @JoinColumn(name = "table_id", nullable = false)
     private RestaurantTable table;
 
     @Override

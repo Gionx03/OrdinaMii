@@ -13,7 +13,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
-    //non ricordo il CLient ID su keycloak
     private static final String CLIENT_ID = "OrdinaMii-Backend";
     private final SecurityExceptionHandler securityExceptionHandler;
 
@@ -55,14 +54,15 @@ public class SecurityConfig {
 
                         // ORDINI
                         .requestMatchers(HttpMethod.GET, "/orders/**").hasAnyRole("ADMIN", "CAMERIERE", "CUOCO")
-                        .requestMatchers(HttpMethod.POST, "/orders").hasAnyRole("CLIENTE", "ADMIN", "CAMERIERE")
+                        .requestMatchers(HttpMethod.POST, "/orders").hasAnyRole("ADMIN", "CAMERIERE")
                         .requestMatchers(HttpMethod.PUT, "/orders/*/status").hasAnyRole("ADMIN", "CAMERIERE", "CUOCO")
+                        .requestMatchers(HttpMethod.PUT, "/orders/*/payment-status").hasAnyRole("ADMIN", "CAMERIERE")
                         .requestMatchers(HttpMethod.PUT, "/orders/**").hasAnyRole("ADMIN", "CAMERIERE")
                         .requestMatchers(HttpMethod.DELETE, "/orders/**").hasRole("ADMIN")
 
                         // PRENOTAZIONI
                         .requestMatchers(HttpMethod.GET, "/reservations/**").hasAnyRole("ADMIN", "CAMERIERE")
-                        .requestMatchers(HttpMethod.POST, "/reservations").hasAnyRole("CLIENTE", "ADMIN", "CAMERIERE")
+                        .requestMatchers(HttpMethod.POST, "/reservations").hasAnyRole( "ADMIN", "CAMERIERE")
                         .requestMatchers(HttpMethod.PUT, "/reservations/*/status").hasAnyRole("ADMIN", "CAMERIERE")
                         .requestMatchers(HttpMethod.PUT, "/reservations/**").hasAnyRole("ADMIN", "CAMERIERE")
                         .requestMatchers(HttpMethod.DELETE, "/reservations/**").hasRole("ADMIN")
@@ -73,7 +73,18 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/assistance-requests/*/status").hasAnyRole("ADMIN", "CAMERIERE")
 
                         // AREA PERSONALE
-                        .requestMatchers("/me/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/me").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/me").hasRole("CLIENTE")
+                        .requestMatchers(HttpMethod.GET, "/me/orders").hasRole("CLIENTE")
+                        .requestMatchers(HttpMethod.POST, "/me/orders").hasRole("CLIENTE")
+                        .requestMatchers(HttpMethod.GET, "/me/reservations").hasRole("CLIENTE")
+                        .requestMatchers(HttpMethod.POST, "/me/reservations").hasRole("CLIENTE")
+
+                        // UTENTI
+                        .requestMatchers(HttpMethod.GET, "/users/*/orders").hasAnyRole("ADMIN", "CAMERIERE")
+                        .requestMatchers(HttpMethod.GET, "/users/*/reservations").hasAnyRole("ADMIN", "CAMERIERE")
+                        .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/users/**").hasRole("ADMIN")
 
                         // Tutto il resto richiede autenticazione
                         .anyRequest().authenticated()

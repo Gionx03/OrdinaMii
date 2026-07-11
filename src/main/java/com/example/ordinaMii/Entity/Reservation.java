@@ -14,17 +14,17 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"table_id", "date", "time"}))
+@Table(name="Reservations")
 public class Reservation {
     @Id
     @Column(name = "Id", nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "data", nullable = false)
+    @Column(name = "date", nullable = false)
     private LocalDate date;
 
-    @Column(name="ora",  nullable = false)
+    @Column(name="time",  nullable = false)
     private LocalTime time;
 
 
@@ -36,11 +36,11 @@ public class Reservation {
     private ReservationStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "UserId", nullable = false)
+    @JoinColumn(name = "user_Id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "TableId", nullable = false)
+    @JoinColumn(name = "table_id", nullable = false)
     private RestaurantTable table;
 
     @Override

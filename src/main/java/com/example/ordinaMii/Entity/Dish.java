@@ -4,6 +4,7 @@ import com.example.ordinaMii.Entity.Enum.DishCategory;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
@@ -24,8 +25,8 @@ public class Dish {
     @Column(name = "Description")
     private String description;
 
-    @Column(name = "Price", nullable = false)
-    private double price;
+    @Column(name = "Price", nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
 
     @Column(name = "Available", nullable = false)
     private boolean available;

@@ -3,6 +3,7 @@ package com.example.ordinaMii.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
@@ -19,15 +20,15 @@ public class OrderItem {
     @Column(name = "Quantity", nullable = false)
     private int quantity;
 
-    @Column(name = "UnitPrice", nullable = false)
-    private double unitPrice;
+    @Column(name = "unit_price", nullable = false, precision = 10, scale = 2)
+    private BigDecimal unitPrice;
 
     @ManyToOne
-    @JoinColumn(name = "OrderId", nullable = false)
-    private Order order;
+    @JoinColumn(name = "Order_Id", nullable = false)
+    private CustomerOrder customerOrder;
 
     @ManyToOne
-    @JoinColumn(name = "DishId", nullable = false)
+    @JoinColumn(name = "Dish_Id", nullable = false)
     private Dish dish;
 
     @Override
@@ -56,7 +57,7 @@ public class OrderItem {
                 "id=" + id +
                 ", quantity=" + quantity +
                 ", price=" + unitPrice +
-                ", orderId=" + order.getId() +
+                ", orderId=" + customerOrder.getId() +
                 ", dishId=" +  dish.getId()  +
                 '}';
     }

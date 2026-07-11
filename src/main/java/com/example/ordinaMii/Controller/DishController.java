@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -30,9 +29,17 @@ public class DishController {
             @RequestParam(required = false) DishCategory category,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String descr,
+            @RequestParam(required = false, defaultValue = "true") Boolean available,
             @PageableDefault(size = 10, sort = "name") Pageable pageable) {
 
-        Page<DishResponseDTO> dishes = dishService.getDishes(category, name, descr,pageable);
+        Page<DishResponseDTO> dishes = dishService.getDishes(
+                category,
+                name,
+                descr,
+                available,
+                pageable
+        );
+
         return ResponseEntity.ok(dishes);
     }
 
@@ -58,8 +65,8 @@ public class DishController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDish(@PathVariable UUID id) {
-        dishService.deleteDish(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<DishResponseDTO> deleteDish(@PathVariable UUID id) {
+        DishResponseDTO dish = dishService.deleteDish(id);
+        return ResponseEntity.ok(dish);
     }
 }

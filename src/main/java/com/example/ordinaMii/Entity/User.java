@@ -32,10 +32,10 @@ public class User {
     @Column(name = "Phone")
     private String phone;
 
-    @Column(name = "CreatedAt")
+    @Column(name = "Created_At")
     private LocalDateTime createdAt;
 
-    @Column(name = "UpdatedAt")
+    @Column(name = "Updated_At")
     private  LocalDateTime updatedAt;
 
     @Override

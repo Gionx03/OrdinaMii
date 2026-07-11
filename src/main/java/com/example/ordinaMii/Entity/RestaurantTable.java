@@ -11,6 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RestaurantTable {
+
     @Id
     @Column(name = "Id", nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -21,6 +22,9 @@ public class RestaurantTable {
 
     @Column(name = "Seats", nullable = false)
     private int seats;
+
+    @Column(name = "active", nullable = false)
+    private boolean active = true;
 
     @Override
     public boolean equals(Object o) {
@@ -47,6 +51,7 @@ public class RestaurantTable {
                 "id=" + id +
                 ", number=" + number +
                 ", seats=" + seats +
+                ", active=" + active +
                 '}';
     }
 }

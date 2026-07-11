@@ -31,31 +31,40 @@ public class DishService {
         this.dishRepository = dishRepository;
         this.dishMapper = dishMapper;
     }
-    @Transactional(readOnly=true)
+
+
+    @Transactional(readOnly = true)
     @Cacheable(
-            value = "dishes_search",
+            value = "dishSearch",
             key = "'list_' + #category + '_' + #name + '_' " +
-                    "+ #descr + '_' + #pageable.pageNumber + '_' " +
+                    "+ #descr + '_' + #available + '_' " +
+                    "+ #pageable.pageNumber + '_' " +
                     "+ #pageable.pageSize + '_' + #pageable.sort"
     )
-
     public Page<DishResponseDTO> getDishes(
             DishCategory category,
             String name,
             String descr,
+            Boolean available,
             Pageable pageable) {
 
-        log.info("Recupero lista piatti. category={}, name={}, descr={}", category, name, descr);
+        log.info("Recupero lista piatti. category={}, name={}, descr={}, available={}",
+                category, name, descr, available);
 
-        Page<Dish> dishes = dishRepository.searchDishes(category, name, descr, pageable);
+        Page<Dish> dishes = dishRepository.searchDishes(
+                category,
+                name,
+                descr,
+                available,
+                pageable
+        );
 
         return dishes.map(dishMapper::toResponseDTO);
     }
 
 
-    @Transactional(readOnly=true)
-    @Cacheable(value = "dishesById", key = "#id")
-
+    @Transactional(readOnly = true)
+    @Cacheable(value = "dishById", key = "#id")
     public DishResponseDTO getDishById(UUID id) {
 
         log.info("Recupero piatto con id={}", id);
@@ -117,23 +126,28 @@ public class DishService {
     }
 
 
-    @Transactional()
+    @Transactional
     @Caching(
             evict = {
-                    @CacheEvict(value = "dishById", key = "#id"),
                     @CacheEvict(value = "dishSearch", allEntries = true)
+            },
+            put = {
+                    @CachePut(value = "dishById", key = "#id")
             }
     )
+    public DishResponseDTO deleteDish(UUID id) {
 
-    public void deleteDish(UUID id) {
-
-        log.info("Eliminazione piatto con id={}", id);
+        log.info("Disattivazione piatto con id={}", id);
 
         Dish dish = dishRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Piatto non trovato con id: " + id));
 
-        dishRepository.delete(dish);
+        dish.setAvailable(false);
 
-        log.info("Piatto eliminato con id={}", id);
+        Dish disabledDish = dishRepository.save(dish);
+
+        log.info("Piatto disattivato con id={}", id);
+
+        return dishMapper.toResponseDTO(disabledDish);
     }
 }

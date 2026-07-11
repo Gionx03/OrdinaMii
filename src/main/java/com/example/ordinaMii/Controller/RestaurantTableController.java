@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -26,8 +25,10 @@ public class RestaurantTableController {
 
     @GetMapping
     public ResponseEntity<Page<RestaurantTableResponseDTO>> getTables(
+            @RequestParam(required = false, defaultValue = "true") Boolean active,
             @PageableDefault(size = 10, sort = "number") Pageable pageable) {
-        Page<RestaurantTableResponseDTO> tables = restaurantTableService.getTables(pageable);
+
+        Page<RestaurantTableResponseDTO> tables = restaurantTableService.getTables(active, pageable);
         return ResponseEntity.ok(tables);
     }
 
@@ -55,8 +56,8 @@ public class RestaurantTableController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTable(@PathVariable UUID id) {
-        restaurantTableService.deleteTable(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<RestaurantTableResponseDTO> deleteTable(@PathVariable UUID id) {
+        RestaurantTableResponseDTO table = restaurantTableService.deleteTable(id);
+        return ResponseEntity.ok(table);
     }
 }

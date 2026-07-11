@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -49,12 +48,13 @@ public class ReservationController {
     }
 
     @GetMapping("/table/{tableId}")
-    public ResponseEntity<List<ReservationResponseDTO>> getReservationsByTable(
+    public ResponseEntity<Page<ReservationResponseDTO>> getReservationsByTable(
             @PathVariable UUID tableId,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data) {
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data,
+            @PageableDefault(size=10, sort="date") Pageable pageable) {
 
-        List<ReservationResponseDTO> reservations =
-                reservationService.getReservationsByTable(tableId, data);
+        Page<ReservationResponseDTO> reservations =
+                reservationService.getReservationsByTable(tableId, data,pageable);
 
         return ResponseEntity.ok(reservations);
     }
@@ -92,8 +92,10 @@ public class ReservationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable UUID id) {
-        reservationService.deleteReservation(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ReservationResponseDTO> deleteReservation(@PathVariable UUID id) {
+
+        ReservationResponseDTO reservation = reservationService.deleteReservation(id);
+
+        return ResponseEntity.ok(reservation);
     }
 }

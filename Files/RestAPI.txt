@@ -14,6 +14,7 @@ Query param:
 - category: filtra per categoria.
 - name: cerca per nome.
 -descr: cerca per la descrizione, che contiene ingredienti
+- available: filtra i piatti disponibili o non disponibili. Di default true.
 Ruolo: tutti
 
 GET /dishes/{id}
@@ -29,7 +30,7 @@ Descrizione: modifica un piatto esistente.
 Ruolo: admin/staff
 
 DELETE /dishes/{id}
-Descrizione: elimina un piatto.
+Descrizione: disattiva un piatto impostando available=false. Il piatto resta nel database per mantenere lo storico degli ordini.
 Ruolo: admin/staff
 
 
@@ -37,6 +38,7 @@ TABLES
 
 
 GET /tables
+- active: filtra i tavoli attivi o disattivati. Di default true.
 Descrizione: ottiene tutti i tavoli del ristorante.
 Ruolo: tutti
 
@@ -50,7 +52,7 @@ Descrizione: modifica un tavolo esistente.
 Ruolo: admin
 
 DELETE /tables/{id}
-Descrizione: elimina un tavolo.
+Descrizione: disattiva un tavolo impostando active=false. Il tavolo resta nel database per mantenere lo storico di ordini, prenotazioni e richieste di assistenza.
 Ruolo: admin
 
 
@@ -71,19 +73,35 @@ Ruolo: admin, waiter
 
 
 POST /orders
-Descrizione: crea un nuovo ordine.
-Ruolo: customer, admin, waiter
+Descrizione: crea un nuovo ordine per uno specifico utente. Può essere d'asporto o al tavolo.
+Body:
+- userId: id dell'utente.
+- orderType: TAKE_AWAY oppure ON_THE_TABLE.
+- tableId: obbligatorio se orderType=ON_THE_TABLE, nullo se orderType=TAKE_AWAY.
+- items: lista dei piatti ordinati.
+Ruolo: admin, waiter
 
 PUT /orders/{id}
 Descrizione: modifica un ordine esistente.
 Ruolo: admin, waiter
 
 PUT /orders/{id}/status
-Descrizione: aggiorna lo stato di un ordine.
+Descrizione: aggiorna lo stato operativo di un ordine.
+Body:
+- status: PENDING, PREPARING, SERVED, CANCELLED.
+Ruolo: admin, waiter, cook
+
+PUT /orders/{id}/payment-status
+Descrizione: aggiorna lo stato del pagamento di un ordine.
+Body:
+- paymentStatus: NOT_PAID, PENDING, PAID, PAY_AT_COUNTER, CANCELLED.
 Ruolo: admin, waiter
 
+
+
 DELETE /orders/{id}
-Descrizione: elimina un ordine.
+Descrizione: cancella logicamente un ordine impostando status=CANCELLED e paymentStatus=CANCELLED.
+L'ordine e le righe restano nel database per mantenere lo storico.
 Ruolo: admin
 
 
@@ -107,18 +125,91 @@ Descrizione: aggiorna lo stato di una richiesta di assistenza.
 Ruolo: admin, waiter
 
 
-USER AREA
-
+PERSONAL AREA
 
 GET /me
 Descrizione: ottiene le informazioni dell'utente autenticato.
-Ruolo: utente autenticato
+Ruolo: authenticated
 
 GET /me/orders
--status: cerca per status
--data: da gli ordini per quella data
-Descrizione: ottiene gli ordini dell'utente autenticato.
+Query params:
+- status
+- startDate
+- page
+- size
+- sort
+Descrizione: ottiene gli ordini dell'utente autenticato, eventualmente filtrati per status e data.
 Ruolo: customer
+
+GET /me/reservations
+Query params:
+- startDate
+- page
+- size
+- sort
+Descrizione: ottiene le prenotazioni dell'utente autenticato da una certa data.
+Ruolo: customer
+
+PATCH /me
+Descrizione: modifica parzialmente il profilo dell'utente autenticato, ad esempio il numero di telefono.
+Ruolo: customer
+
+POST /me/orders
+Descrizione: crea un ordine per l'utente autenticato. Lo userId viene ricavato dal JWT e non viene passato nel body.
+Body:
+- orderType: TAKE_AWAY oppure ON_THE_TABLE.
+- tableId: obbligatorio se orderType=ON_THE_TABLE, nullo se orderType=TAKE_AWAY.
+- items: lista dei piatti ordinati.
+Ruolo: customer
+
+
+POST /me/reservations
+Descrizione: crea una prenotazione per l'utente autenticato. Lo userId viene ricavato dal JWT e non viene passato nel body.
+Body:
+- date: data della prenotazione.
+- time: ora della prenotazione.
+- numberOfPeople: numero di persone.
+- tableId: id del tavolo.
+Ruolo: customer
+
+User Area
+
+GET /users
+Query params:
+- role
+- page
+- size
+- sort
+Descrizione: ottiene una lista paginata di utenti, eventualmente filtrata per ruolo.
+Ruolo: admin
+
+GET /users/{id}
+Descrizione: ottiene uno specifico utente.
+Ruolo: admin
+
+GET /users/{id}/orders
+Query params:
+- status
+- startDate
+- page
+- size
+- sort
+Descrizione: ottiene gli ordini di uno specifico utente.
+Ruolo: admin / manager
+
+GET /users/{id}/reservations
+Query params:
+- startDate
+- page
+- size
+- sort
+Descrizione: ottiene le prenotazioni di uno specifico utente.
+Ruolo: admin / manager
+
+
+
+
+
 
 
 RESERVATIONS
@@ -147,8 +238,14 @@ Ruolo: admin, waiter
 
 
 POST /reservations
-Descrizione: crea una nuova prenotazione.
-Ruolo: customer, admin, waiter
+Descrizione: crea una nuova prenotazione per uno specifico utente.
+Body:
+- userId: id dell'utente.
+- date: data della prenotazione.
+- time: ora della prenotazione.
+- numberOfPeople: numero di persone.
+- tableId: id del tavolo.
+Ruolo: admin, waiter
 
 
 PUT /reservations/{id}
@@ -162,6 +259,7 @@ Ruolo: admin, waiter
 
 
 DELETE /reservations/{id}
-Descrizione: elimina una prenotazione.
+Descrizione: cancella logicamente una prenotazione impostando status=CANCELLED.
+La prenotazione resta nello storico e non blocca più il tavolo.
 Ruolo: admin
 

@@ -21,6 +21,7 @@ public class RestaurantTableMapper {
 
         table.setNumber(dto.number());
         table.setSeats(dto.seats());
+        table.setActive(true);
 
         return table;
     }
@@ -45,6 +46,7 @@ public class RestaurantTableMapper {
                 .id(table.getId())
                 .number(table.getNumber())
                 .seats(table.getSeats())
+                .active(table.isActive())
                 .build();
     }
 

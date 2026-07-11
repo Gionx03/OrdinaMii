@@ -1,8 +1,8 @@
 package com.example.ordinaMii.DTO.Response;
 
 import com.example.ordinaMii.Entity.Enum.OrderStatus;
+import com.example.ordinaMii.Entity.Enum.OrderType;
 import com.example.ordinaMii.Entity.Enum.PaymentStatus;
-import com.example.ordinaMii.Entity.Enum.Roles;
 import lombok.Builder;
 
 import java.math.BigDecimal;
@@ -17,8 +17,9 @@ public record OrderResponseDTO(
         BigDecimal total,
         OrderStatus status,
         PaymentStatus paymentStatus,
-        Roles role,
+        OrderType orderType,
         UserLightResponseDTO user,
+        RestaurantTableResponseDTO table,
         List<OrderItemResponseDTO> items
 ) {
 }

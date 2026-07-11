@@ -5,6 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder
-public record PaymentStatusUpdateResponse(@NotNull(message = "Lo stato del pagamento è obbligatorio")
+public record PaymentStatusUpdateRequestDTO(@NotNull(message = "Lo stato del pagamento è obbligatorio")
                                           PaymentStatus paymentStatus) {
 }

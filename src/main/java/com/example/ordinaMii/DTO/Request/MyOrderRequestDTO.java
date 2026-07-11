@@ -10,10 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Builder
-public record OrderRequestDTO(
-
-        @NotNull(message = "L'id dell'utente è obbligatorio")
-        UUID userId,
+public record MyOrderRequestDTO(
 
         @NotNull(message = "Il tipo di ordine è obbligatorio")
         OrderType orderType,

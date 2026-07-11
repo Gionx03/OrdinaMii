@@ -3,7 +3,7 @@ package com.example.ordinaMii.Mapper;
 import com.example.ordinaMii.DTO.Request.OrderItemRequestDTO;
 import com.example.ordinaMii.DTO.Response.OrderItemResponseDTO;
 import com.example.ordinaMii.Entity.Dish;
-import com.example.ordinaMii.Entity.Order;
+import com.example.ordinaMii.Entity.CustomerOrder;
 import com.example.ordinaMii.Entity.OrderItem;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +21,7 @@ public class OrderItemMapper {
 
     public OrderItem toEntity(OrderItemRequestDTO dto,
                               Dish dish,
-                              Order order) {
+                              CustomerOrder customerOrder) {
 
         if (dto == null) {
             return null;
@@ -31,7 +31,7 @@ public class OrderItemMapper {
 
         orderItem.setQuantity(dto.quantity());
         orderItem.setDish(dish);
-        orderItem.setOrder(order);
+        orderItem.setCustomerOrder(customerOrder);
 
         if (dish != null) {
             orderItem.setUnitPrice(dish.getPrice());
