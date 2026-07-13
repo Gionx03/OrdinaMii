@@ -818,13 +818,13 @@
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
         "http://localhost:8080/*",
-        "http://localhost:5173/*",
+        "http://localhost:4200/*",
         "https://oauth.pstmn.io/v1/callback"
       ],
       "webOrigins": [
         "http://localhost:8080",
         "*",
-        "http://localhost:5173"
+        "http://localhost:4200"
       ],
       "notBefore": 0,
       "bearerOnly": false,
