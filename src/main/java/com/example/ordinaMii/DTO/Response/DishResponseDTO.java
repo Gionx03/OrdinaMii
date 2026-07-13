@@ -12,7 +12,8 @@ public record DishResponseDTO(
         String name,
         String description,
         BigDecimal price,
+        DishCategory category,
         boolean available,
-        DishCategory category
+        String imageUrl
 ) {
 }

@@ -16,9 +16,10 @@ public interface DishRepository extends JpaRepository<Dish, UUID> {
         SELECT d
         FROM Dish d
         WHERE (:category IS NULL OR d.category = :category)
-        AND (:name IS NULL OR LOWER(d.name) LIKE LOWER(CONCAT('%', :name, '%')))
-        AND (:descr IS NULL OR LOWER(d.description) LIKE LOWER(CONCAT('%', :descr, '%')))
+        AND (:name = '' OR LOWER(d.name) LIKE CONCAT('%', :name, '%'))
+        AND (:descr = '' OR LOWER(d.description) LIKE CONCAT('%', :descr, '%'))
         AND (:available IS NULL OR d.available = :available)
+        ORDER BY d.name ASC
         """)
     Page<Dish> searchDishes(
             @Param("category") DishCategory category,

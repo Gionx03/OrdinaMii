@@ -1,0 +1,260 @@
+{
+  "id": "ordinamii-demo-local-env",
+  "name": "OrdinaMii Demo Local",
+  "values": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "keycloakBaseUrl",
+      "value": "http://localhost:8081",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "keycloakRealm",
+      "value": "OrdinaMii",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "keycloakClientId",
+      "value": "ordinamii-client",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "demoPassword",
+      "value": "Password123!",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "adminUsername",
+      "value": "admin.demo",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "clienteUsername",
+      "value": "cliente.demo",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "cameriereUsername",
+      "value": "cameriere1.demo",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "cuocoUsername",
+      "value": "cuoco1.demo",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "clientToken",
+      "value": "",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "waiterToken",
+      "value": "",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "cookToken",
+      "value": "",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "carbonaraDishId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "acquaNaturaleDishId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "tagliataDishId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "filejaDishId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "hamburgerDishId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "inactiveDishId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "table1Id",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "table3Id",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "table10Id",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "createdOrderId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "createdReservationId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "createdAssistanceId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "clientUserId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "demoPendingOrderId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "demoPreparingOrderId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "demoServedPaidOrderId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "demoCancelledOrderId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "demoConfirmedReservationId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "conflictReservationDate",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "conflictReservationTime",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "conflictReservationTableId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "demoPendingAssistanceId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "demoResolvedAssistanceId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "demoCancelledAssistanceId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "demoDatePlus5",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "demoReservationTime",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "generatedDishName",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "today",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "startDate",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_using": "ChatGPT"
+}

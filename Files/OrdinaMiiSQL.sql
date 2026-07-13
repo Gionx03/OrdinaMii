@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS dish (
     description TEXT,
     price NUMERIC(10, 2) NOT NULL,
     available BOOLEAN NOT NULL DEFAULT TRUE,
+    image_url VARCHAR(255),
 
     category VARCHAR(50) NOT NULL
     );
