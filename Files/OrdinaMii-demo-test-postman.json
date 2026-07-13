@@ -1,0 +1,2215 @@
+{
+  "info": {
+    "name": "OrdinaMii - Demo Backend Tests",
+    "_postman_id": "8a3b8b6a-ordinamii-demo-tests",
+    "description": "Collection Postman per mostrare il backend OrdinaMii con i dati caricati dal DemoDataLoader. Prima eseguire la cartella 00 - Auth, poi le altre in ordine.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const now = new Date();",
+          "function addDays(days) {",
+          "    const d = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);",
+          "    return d.toISOString().slice(0, 10);",
+          "}",
+          "function setVar(k, v) {",
+          "    pm.environment.set(k, v);",
+          "    pm.collectionVariables.set(k, v);",
+          "}",
+          "setVar(\"today\", addDays(0));",
+          "setVar(\"startDate\", \"1900-01-01\");",
+          "setVar(\"demoDatePlus5\", addDays(5));",
+          "setVar(\"demoReservationTime\", \"19:00\");",
+          "setVar(\"generatedDishName\", \"Piatto test Postman \" + Date.now());"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "carbonaraDishId",
+      "value": ""
+    },
+    {
+      "key": "acquaNaturaleDishId",
+      "value": ""
+    },
+    {
+      "key": "tagliataDishId",
+      "value": ""
+    },
+    {
+      "key": "filejaDishId",
+      "value": ""
+    },
+    {
+      "key": "inactiveDishId",
+      "value": ""
+    },
+    {
+      "key": "table1Id",
+      "value": ""
+    },
+    {
+      "key": "table3Id",
+      "value": ""
+    },
+    {
+      "key": "table10Id",
+      "value": ""
+    },
+    {
+      "key": "createdOrderId",
+      "value": ""
+    },
+    {
+      "key": "createdReservationId",
+      "value": ""
+    },
+    {
+      "key": "createdAssistanceId",
+      "value": ""
+    },
+    {
+      "key": "demoPendingOrderId",
+      "value": ""
+    },
+    {
+      "key": "demoPreparingOrderId",
+      "value": ""
+    },
+    {
+      "key": "demoServedPaidOrderId",
+      "value": ""
+    },
+    {
+      "key": "demoCancelledOrderId",
+      "value": ""
+    },
+    {
+      "key": "demoConfirmedReservationId",
+      "value": ""
+    },
+    {
+      "key": "conflictReservationDate",
+      "value": ""
+    },
+    {
+      "key": "conflictReservationTime",
+      "value": ""
+    },
+    {
+      "key": "conflictReservationTableId",
+      "value": ""
+    },
+    {
+      "key": "demoPendingAssistanceId",
+      "value": ""
+    },
+    {
+      "key": "demoResolvedAssistanceId",
+      "value": ""
+    },
+    {
+      "key": "demoCancelledAssistanceId",
+      "value": ""
+    },
+    {
+      "key": "demoDatePlus5",
+      "value": ""
+    },
+    {
+      "key": "demoReservationTime",
+      "value": "19:00"
+    },
+    {
+      "key": "generatedDishName",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "00 - Auth Keycloak",
+      "description": "Esegui prima questa cartella. Salva automaticamente i token JWT nell'environment.",
+      "item": [
+        {
+          "name": "Login admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "password",
+                  "type": "text"
+                },
+                {
+                  "key": "client_id",
+                  "value": "{{keycloakClientId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "username",
+                  "value": "{{adminUsername}}",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "{{demoPassword}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{keycloakBaseUrl}}/realms/{{keycloakRealm}}/protocol/openid-connect/token",
+              "host": [
+                "{{keycloakBaseUrl}}"
+              ],
+              "path": [
+                "realms",
+                "{{keycloakRealm}}",
+                "protocol",
+                "openid-connect",
+                "token"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Token ottenuto\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.expect(json).to.have.property(\"access_token\");",
+                  "pm.environment.set(\"adminToken\", json.access_token);"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Login cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "password",
+                  "type": "text"
+                },
+                {
+                  "key": "client_id",
+                  "value": "{{keycloakClientId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "username",
+                  "value": "{{clienteUsername}}",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "{{demoPassword}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{keycloakBaseUrl}}/realms/{{keycloakRealm}}/protocol/openid-connect/token",
+              "host": [
+                "{{keycloakBaseUrl}}"
+              ],
+              "path": [
+                "realms",
+                "{{keycloakRealm}}",
+                "protocol",
+                "openid-connect",
+                "token"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Token ottenuto\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.expect(json).to.have.property(\"access_token\");",
+                  "pm.environment.set(\"clientToken\", json.access_token);"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Login cameriere",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "password",
+                  "type": "text"
+                },
+                {
+                  "key": "client_id",
+                  "value": "{{keycloakClientId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "username",
+                  "value": "{{cameriereUsername}}",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "{{demoPassword}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{keycloakBaseUrl}}/realms/{{keycloakRealm}}/protocol/openid-connect/token",
+              "host": [
+                "{{keycloakBaseUrl}}"
+              ],
+              "path": [
+                "realms",
+                "{{keycloakRealm}}",
+                "protocol",
+                "openid-connect",
+                "token"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Token ottenuto\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.expect(json).to.have.property(\"access_token\");",
+                  "pm.environment.set(\"waiterToken\", json.access_token);"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Login cuoco",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "password",
+                  "type": "text"
+                },
+                {
+                  "key": "client_id",
+                  "value": "{{keycloakClientId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "username",
+                  "value": "{{cuocoUsername}}",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "{{demoPassword}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{keycloakBaseUrl}}/realms/{{keycloakRealm}}/protocol/openid-connect/token",
+              "host": [
+                "{{keycloakBaseUrl}}"
+              ],
+              "path": [
+                "realms",
+                "{{keycloakRealm}}",
+                "protocol",
+                "openid-connect",
+                "token"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Token ottenuto\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.expect(json).to.have.property(\"access_token\");",
+                  "pm.environment.set(\"cookToken\", json.access_token);"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "01 - Lettura dati demo pubblici",
+      "item": [
+        {
+          "name": "GET piatti disponibili - salva id demo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/dishes?page=0&size=100&available=true&name=&descr=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dishes"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "100"
+                },
+                {
+                  "key": "available",
+                  "value": "true"
+                },
+                {
+                  "key": "name",
+                  "value": ""
+                },
+                {
+                  "key": "descr",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Risposta JSON\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "function setVar(k, v) {",
+                  "    pm.environment.set(k, v);",
+                  "    pm.collectionVariables.set(k, v);",
+                  "}",
+                  "",
+                  "const json = pm.response.json();",
+                  "const dishes = Array.isArray(json) ? json : json.content;",
+                  "",
+                  "pm.test(\"La risposta contiene piatti\", function () {",
+                  "    pm.expect(dishes).to.be.an(\"array\");",
+                  "    pm.expect(dishes.length, \"GET /dishes non sta restituendo piatti: controlla name=&descr= oppure DishService\").to.be.greaterThan(0);",
+                  "});",
+                  "",
+                  "pm.test(\"Ogni piatto disponibile ha imageUrl\", function () {",
+                  "    dishes.forEach(dish => {",
+                  "        pm.expect(dish).to.have.property(\"imageUrl\");",
+                  "        pm.expect(dish.imageUrl).to.be.a(\"string\");",
+                  "        pm.expect(dish.imageUrl).to.not.be.empty;",
+                  "    });",
+                  "});",
+                  "",
+                  "function saveDishIdByName(variableName, partialName) {",
+                  "    const dish = dishes.find(d => d.name && d.name.toLowerCase().includes(partialName.toLowerCase()));",
+                  "    pm.test(\"Trovato piatto demo: \" + partialName, function () {",
+                  "        pm.expect(dish, \"Piatto non trovato: \" + partialName).to.not.be.undefined;",
+                  "    });",
+                  "    if (dish) {",
+                  "        setVar(variableName, dish.id);",
+                  "        console.log(variableName + \" = \" + dish.id);",
+                  "    }",
+                  "}",
+                  "",
+                  "saveDishIdByName(\"carbonaraDishId\", \"carbonara\");",
+                  "saveDishIdByName(\"acquaNaturaleDishId\", \"acqua naturale\");",
+                  "saveDishIdByName(\"tagliataDishId\", \"tagliata\");",
+                  "saveDishIdByName(\"filejaDishId\", \"fileja\");",
+                  "saveDishIdByName(\"hamburgerDishId\", \"hamburger ordinamii\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET piatti non disponibili - soft delete demo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/dishes?page=0&size=100&available=false&name=&descr=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dishes"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "100"
+                },
+                {
+                  "key": "available",
+                  "value": "false"
+                },
+                {
+                  "key": "name",
+                  "value": ""
+                },
+                {
+                  "key": "descr",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Risposta JSON\", function () { pm.response.to.be.json; });",
+                  "function setVar(k,v){pm.environment.set(k,v); pm.collectionVariables.set(k,v);}",
+                  "const json = pm.response.json();",
+                  "const dishes = Array.isArray(json) ? json : json.content;",
+                  "pm.test(\"Risposta paginata\", function () {",
+                  "    pm.expect(dishes).to.be.an(\"array\");",
+                  "});",
+                  "const inactive = dishes.find(d => d.available === false || (d.name && d.name.toLowerCase().includes(\"crostata\")));",
+                  "pm.test(\"Esiste almeno un piatto non disponibile\", function () {",
+                  "    pm.expect(inactive, \"Nessun piatto disattivato trovato\").to.not.be.undefined;",
+                  "});",
+                  "if (inactive) setVar(\"inactiveDishId\", inactive.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET tavoli attivi - salva id demo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/tables?page=0&size=100&active=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tables"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "100"
+                },
+                {
+                  "key": "active",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Risposta JSON\", function () { pm.response.to.be.json; });",
+                  "function setVar(k,v){pm.environment.set(k,v); pm.collectionVariables.set(k,v);}",
+                  "const json = pm.response.json();",
+                  "const tables = Array.isArray(json) ? json : json.content;",
+                  "pm.test(\"La risposta contiene tavoli\", function () {",
+                  "    pm.expect(tables).to.be.an(\"array\");",
+                  "    pm.expect(tables.length).to.be.greaterThan(0);",
+                  "});",
+                  "function saveTableIdByNumber(variableName, number) {",
+                  "    const table = tables.find(t => Number(t.number) === Number(number));",
+                  "    pm.test(\"Trovato tavolo demo numero \" + number, function () {",
+                  "        pm.expect(table, \"Tavolo non trovato: \" + number).to.not.be.undefined;",
+                  "    });",
+                  "    if (table) setVar(variableName, table.id);",
+                  "}",
+                  "saveTableIdByNumber(\"table1Id\", 1);",
+                  "saveTableIdByNumber(\"table3Id\", 3);",
+                  "saveTableIdByNumber(\"table10Id\", 10);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 - Admin: gestione e dashboard",
+      "item": [
+        {
+          "name": "GET utenti - admin",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users?page=0&size=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Risposta JSON\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Risposta paginata\", function () {",
+                  "    pm.expect(json).to.have.property(\"content\");",
+                  "    pm.expect(json.content).to.be.an(\"array\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET ordini demo - admin, salva stati",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders?page=0&size=50",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "50"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Risposta JSON\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Risposta paginata\", function () {",
+                  "    pm.expect(json).to.have.property(\"content\");",
+                  "    pm.expect(json.content).to.be.an(\"array\");",
+                  "});",
+                  "",
+                  "const orders = pm.response.json().content;",
+                  "",
+                  "const pendingOrder = orders.find(o => o.status === \"PENDING\");",
+                  "const preparingOrder = orders.find(o => o.status === \"PREPARING\");",
+                  "const servedPaidOrder = orders.find(o => o.status === \"SERVED\" && o.paymentStatus === \"PAID\");",
+                  "const cancelledOrder = orders.find(o => o.status === \"CANCELLED\");",
+                  "",
+                  "pm.test(\"Sono presenti ordini demo con stati diversi\", function () {",
+                  "    pm.expect(pendingOrder, \"ordine PENDING mancante\").to.not.be.undefined;",
+                  "    pm.expect(preparingOrder, \"ordine PREPARING mancante\").to.not.be.undefined;",
+                  "    pm.expect(servedPaidOrder, \"ordine SERVED/PAID mancante\").to.not.be.undefined;",
+                  "    pm.expect(cancelledOrder, \"ordine CANCELLED mancante\").to.not.be.undefined;",
+                  "});",
+                  "",
+                  "if (pendingOrder) pm.environment.set(\"demoPendingOrderId\", pendingOrder.id);",
+                  "pm.collectionVariables.set(\"demoPendingOrderId\", pendingOrder.id);",
+                  "if (preparingOrder) pm.environment.set(\"demoPreparingOrderId\", preparingOrder.id);",
+                  "pm.collectionVariables.set(\"demoPreparingOrderId\", preparingOrder.id);",
+                  "if (servedPaidOrder) pm.environment.set(\"demoServedPaidOrderId\", servedPaidOrder.id);",
+                  "pm.collectionVariables.set(\"demoServedPaidOrderId\", servedPaidOrder.id);",
+                  "if (cancelledOrder) pm.environment.set(\"demoCancelledOrderId\", cancelledOrder.id);",
+                  "pm.collectionVariables.set(\"demoCancelledOrderId\", cancelledOrder.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET prenotazioni demo - admin, salva slot conflitto",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reservations?page=0&size=50",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "50"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Risposta JSON\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Risposta paginata\", function () {",
+                  "    pm.expect(json).to.have.property(\"content\");",
+                  "    pm.expect(json.content).to.be.an(\"array\");",
+                  "});",
+                  "",
+                  "const reservations = pm.response.json().content;",
+                  "",
+                  "const confirmed = reservations.find(r => r.status === \"CONFIRMED\");",
+                  "const completed = reservations.find(r => r.status === \"COMPLETED\");",
+                  "const cancelled = reservations.find(r => r.status === \"CANCELLED\");",
+                  "",
+                  "pm.test(\"Sono presenti prenotazioni demo con stati diversi\", function () {",
+                  "    pm.expect(confirmed, \"prenotazione CONFIRMED mancante\").to.not.be.undefined;",
+                  "    pm.expect(completed, \"prenotazione COMPLETED mancante\").to.not.be.undefined;",
+                  "    pm.expect(cancelled, \"prenotazione CANCELLED mancante\").to.not.be.undefined;",
+                  "});",
+                  "",
+                  "if (confirmed) {",
+                  "    pm.environment.set(\"demoConfirmedReservationId\", confirmed.id);",
+                  "pm.collectionVariables.set(\"demoConfirmedReservationId\", confirmed.id);",
+                  "    pm.environment.set(\"conflictReservationDate\", confirmed.date);",
+                  "pm.collectionVariables.set(\"conflictReservationDate\", confirmed.date);",
+                  "    pm.environment.set(\"conflictReservationTime\", confirmed.time);",
+                  "pm.collectionVariables.set(\"conflictReservationTime\", confirmed.time);",
+                  "",
+                  "    if (confirmed.table && confirmed.table.id) {",
+                  "        pm.environment.set(\"conflictReservationTableId\", confirmed.table.id);",
+                  "pm.collectionVariables.set(\"conflictReservationTableId\", confirmed.table.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET richieste assistenza demo - admin",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/assistance-requests?page=0&size=50",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assistance-requests"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "50"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Risposta JSON\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Risposta paginata\", function () {",
+                  "    pm.expect(json).to.have.property(\"content\");",
+                  "    pm.expect(json.content).to.be.an(\"array\");",
+                  "});",
+                  "",
+                  "const requests = pm.response.json().content;",
+                  "",
+                  "const pending = requests.find(r => r.status === \"PENDING\");",
+                  "const resolved = requests.find(r => r.status === \"RESOLVED\");",
+                  "const cancelled = requests.find(r => r.status === \"CANCELLED\");",
+                  "",
+                  "pm.test(\"Sono presenti richieste assistenza demo con stati diversi\", function () {",
+                  "    pm.expect(pending, \"richiesta PENDING mancante\").to.not.be.undefined;",
+                  "    pm.expect(resolved, \"richiesta RESOLVED mancante\").to.not.be.undefined;",
+                  "    pm.expect(cancelled, \"richiesta CANCELLED mancante\").to.not.be.undefined;",
+                  "});",
+                  "",
+                  "if (pending) pm.environment.set(\"demoPendingAssistanceId\", pending.id);",
+                  "pm.collectionVariables.set(\"demoPendingAssistanceId\", pending.id);",
+                  "if (resolved) pm.environment.set(\"demoResolvedAssistanceId\", resolved.id);",
+                  "pm.collectionVariables.set(\"demoResolvedAssistanceId\", resolved.id);",
+                  "if (cancelled) pm.environment.set(\"demoCancelledAssistanceId\", cancelled.id);",
+                  "pm.collectionVariables.set(\"demoCancelledAssistanceId\", cancelled.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST nuovo piatto - admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dishes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dishes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{generatedDishName}}\",\n  \"description\": \"Piatto creato da Postman durante la demo\",\n  \"price\": 9.9,\n  \"category\": \"PRIMO\",\n  \"available\": true,\n  \"imageUrl\": \"/images/dishes/spaghetti-alla-carbonara.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"Risposta JSON\", function () { pm.response.to.be.json; });",
+                  "function setVar(k,v){pm.environment.set(k,v); pm.collectionVariables.set(k,v);}",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Piatto admin creato\", function () {",
+                  "    pm.expect(json).to.have.property(\"id\");",
+                  "    pm.expect(json.available).to.eql(true);",
+                  "    pm.expect(json.imageUrl).to.eql(\"/images/dishes/spaghetti-alla-carbonara.jpg\");",
+                  "});",
+                  "setVar(\"adminCreatedDishId\", json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE piatto - soft delete admin",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dishes/{{adminCreatedDishId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dishes",
+                "{{adminCreatedDishId}}"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Risposta JSON\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.test(\"DELETE piatto = soft delete\", function () {",
+                  "    pm.expect(json.available).to.eql(false);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 - Cliente: area personale",
+      "item": [
+        {
+          "name": "GET /me - cliente",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "me"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Risposta JSON\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Utente autenticato letto correttamente\", function () {",
+                  "    pm.expect(json).to.have.property(\"id\");",
+                  "    pm.expect(json).to.have.property(\"email\");",
+                  "});",
+                  "pm.environment.set(\"clientUserId\", json.id);",
+                  "pm.collectionVariables.set(\"clientUserId\", json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /me telefono - cliente",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "me"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"3339999999\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Risposta JSON\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST ordine personale TAKE_AWAY - cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/me/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "me",
+                "orders"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderType\": \"TAKE_AWAY\",\n  \"tableId\": null,\n  \"items\": [\n    {\n      \"dishId\": \"{{carbonaraDishId}}\",\n      \"quantity\": 1\n    },\n    {\n      \"dishId\": \"{{acquaNaturaleDishId}}\",\n      \"quantity\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const carbonara = pm.environment.get(\"carbonaraDishId\") || pm.collectionVariables.get(\"carbonaraDishId\");",
+                  "const acqua = pm.environment.get(\"acquaNaturaleDishId\") || pm.collectionVariables.get(\"acquaNaturaleDishId\");",
+                  "if (!carbonara || !acqua) {",
+                  "    throw new Error(\"Mancano carbonaraDishId/acquaNaturaleDishId. Esegui prima: 01 - Lettura dati demo pubblici -> GET piatti disponibili - salva id demo. Se resta vuoto, correggi DishService normalizzando name/descr oppure usa name=&descr=.\");",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test(\"Risposta JSON\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Ordine personale creato correttamente\", function () {",
+                  "    pm.expect(json).to.have.property(\"id\");",
+                  "    pm.expect(json.orderType).to.eql(\"TAKE_AWAY\");",
+                  "    pm.expect(json.status).to.eql(\"PENDING\");",
+                  "    pm.expect(json.paymentStatus).to.eql(\"NOT_PAID\");",
+                  "});",
+                  "pm.environment.set(\"createdOrderId\", json.id);",
+                  "pm.collectionVariables.set(\"createdOrderId\", json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET miei ordini - cliente",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/me/orders?page=0&size=20&startDate={{startDate}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "me",
+                "orders"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                },
+                {
+                  "key": "startDate",
+                  "value": "{{startDate}}"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Risposta JSON\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Risposta paginata\", function () {",
+                  "    pm.expect(json).to.have.property(\"content\");",
+                  "    pm.expect(json.content).to.be.an(\"array\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST prenotazione personale - cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/me/reservations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "me",
+                "reservations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"{{demoDatePlus5}}\",\n  \"time\": \"{{demoReservationTime}}\",\n  \"numberOfPeople\": 2,\n  \"tableId\": \"{{table10Id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test(\"Risposta JSON\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Prenotazione personale creata correttamente\", function () {",
+                  "    pm.expect(json).to.have.property(\"id\");",
+                  "    pm.expect(json.status).to.eql(\"CONFIRMED\");",
+                  "});",
+                  "pm.environment.set(\"createdReservationId\", json.id);",
+                  "pm.collectionVariables.set(\"createdReservationId\", json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET mie prenotazioni - cliente",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/me/reservations?page=0&size=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "me",
+                "reservations"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Risposta JSON\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Risposta paginata\", function () {",
+                  "    pm.expect(json).to.have.property(\"content\");",
+                  "    pm.expect(json.content).to.be.an(\"array\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST richiesta assistenza - cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/assistance-requests",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assistance-requests"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"Richiesta demo creata da Postman\",\n  \"tableId\": \"{{table3Id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test(\"Risposta JSON\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Richiesta assistenza creata correttamente\", function () {",
+                  "    pm.expect(json).to.have.property(\"id\");",
+                  "    pm.expect(json.status).to.eql(\"PENDING\");",
+                  "});",
+                  "pm.environment.set(\"createdAssistanceId\", json.id);",
+                  "pm.collectionVariables.set(\"createdAssistanceId\", json.id);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 - Cucina e sala: workflow ordine",
+      "item": [
+        {
+          "name": "GET ordini - cuoco",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{cookToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders?page=0&size=50",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "50"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Risposta JSON\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Risposta paginata\", function () {",
+                  "    pm.expect(json).to.have.property(\"content\");",
+                  "    pm.expect(json.content).to.be.an(\"array\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PUT ordine creato -> PREPARING - cuoco",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{cookToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{createdOrderId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders",
+                "{{createdOrderId}}",
+                "status"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"PREPARING\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Risposta JSON\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Ordine passato a PREPARING\", function () {",
+                  "    pm.expect(json.status).to.eql(\"PREPARING\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PUT ordine creato -> SERVED - cuoco",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{cookToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{createdOrderId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders",
+                "{{createdOrderId}}",
+                "status"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"SERVED\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Risposta JSON\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Ordine passato a SERVED\", function () {",
+                  "    pm.expect(json.status).to.eql(\"SERVED\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PUT pagamento ordine creato -> PAID - cameriere",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{waiterToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{createdOrderId}}/payment-status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders",
+                "{{createdOrderId}}",
+                "payment-status"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentStatus\": \"PAID\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Risposta JSON\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Pagamento passato a PAID\", function () {",
+                  "    pm.expect(json.paymentStatus).to.eql(\"PAID\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05 - Prenotazioni e assistenza",
+      "item": [
+        {
+          "name": "GET prenotazioni - cameriere",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{waiterToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reservations?page=0&size=50",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "50"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Risposta JSON\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Risposta paginata\", function () {",
+                  "    pm.expect(json).to.have.property(\"content\");",
+                  "    pm.expect(json.content).to.be.an(\"array\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE prenotazione creata - admin",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reservations/{{createdReservationId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservations",
+                "{{createdReservationId}}"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Risposta JSON\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Prenotazione cancellata logicamente\", function () {",
+                  "    pm.expect(json.status).to.eql(\"CANCELLED\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET richieste assistenza - cameriere",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{waiterToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/assistance-requests?page=0&size=50",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assistance-requests"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "50"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Risposta JSON\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Risposta paginata\", function () {",
+                  "    pm.expect(json).to.have.property(\"content\");",
+                  "    pm.expect(json.content).to.be.an(\"array\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PUT richiesta assistenza creata -> RESOLVED - cameriere",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{waiterToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/assistance-requests/{{createdAssistanceId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assistance-requests",
+                "{{createdAssistanceId}}",
+                "status"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"RESOLVED\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Risposta JSON\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Richiesta assistenza risolta\", function () {",
+                  "    pm.expect(json.status).to.eql(\"RESOLVED\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "06 - Test negativi da mostrare all'esame",
+      "item": [
+        {
+          "name": "CLIENTE non può creare ordine per altri utenti: POST /orders",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{clientUserId}}\",\n  \"orderType\": \"TAKE_AWAY\",\n  \"tableId\": null,\n  \"items\": [\n    {\n      \"dishId\": \"{{carbonaraDishId}}\",\n      \"quantity\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 403 Forbidden\", function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TAKE_AWAY con tableId deve fallire",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/me/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "me",
+                "orders"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderType\": \"TAKE_AWAY\",\n  \"tableId\": \"{{table3Id}}\",\n  \"items\": [\n    {\n      \"dishId\": \"{{carbonaraDishId}}\",\n      \"quantity\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400 Bad Request\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "ON_THE_TABLE senza tableId deve fallire",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/me/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "me",
+                "orders"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderType\": \"ON_THE_TABLE\",\n  \"tableId\": null,\n  \"items\": [\n    {\n      \"dishId\": \"{{carbonaraDishId}}\",\n      \"quantity\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400 Bad Request\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Prenotazione duplicata stesso slot deve dare 409",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/me/reservations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "me",
+                "reservations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"{{conflictReservationDate}}\",\n  \"time\": \"{{conflictReservationTime}}\",\n  \"numberOfPeople\": 2,\n  \"tableId\": \"{{conflictReservationTableId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 409 Conflict\", function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Richiesta RESOLVED non può tornare PENDING",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{waiterToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/assistance-requests/{{createdAssistanceId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assistance-requests",
+                "{{createdAssistanceId}}",
+                "status"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"PENDING\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 409 Conflict\", function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Ordine SERVED/PAID non può essere cancellato",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{createdOrderId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders",
+                "{{createdOrderId}}"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 409 Conflict\", function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

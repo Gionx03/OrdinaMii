@@ -61,8 +61,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     @Cacheable(
             value = "orderSearch",
-            key = "'list_' + #status + '_' + #customerId + '_' + #data + '_' " +
-                    "+ #pageable.pageNumber + '_' + #pageable.pageSize + '_' + #pageable.sort"
+            key = "#status + '_' + #customerId + '_' + #data + '_' + #pageable.pageNumber + '_' + #pageable.pageSize + '_' + #pageable.sort"
     )
     public Page<OrderResponseDTO> getOrders(
             OrderStatus status,
@@ -73,14 +72,22 @@ public class OrderService {
         log.info("Recupero lista ordini. status={}, customerId={}, data={}",
                 status, customerId, data);
 
-        LocalDateTime startDateTime = getStartDateTime(data);
-        LocalDateTime endDateTime = getEndDateTime(data);
+        LocalDateTime startDate;
+        LocalDateTime endDate;
+
+        if (data == null) {
+            startDate = LocalDateTime.of(1900, 1, 1, 0, 0);
+            endDate = LocalDateTime.of(3000, 1, 1, 0, 0);
+        } else {
+            startDate = data.atStartOfDay();
+            endDate = data.plusDays(1).atStartOfDay();
+        }
 
         Page<CustomerOrder> orders = orderRepository.searchOrders(
                 status,
                 customerId,
-                startDateTime,
-                endDateTime,
+                startDate,
+                endDate,
                 pageable
         );
 
@@ -384,8 +391,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     @Cacheable(
             value = "userOrderSearch",
-            key = "'user_' + #userId + '_' + #status + '_' + #startDate + '_' " +
-                    "+ #pageable.pageNumber + '_' + #pageable.pageSize + '_' + #pageable.sort"
+            key = "#userId + '_' + #status + '_' + #startDate + '_' + #pageable.pageNumber + '_' + #pageable.pageSize + '_' + #pageable.sort"
     )
     public Page<OrderResponseDTO> getOrdersByUser(
             UUID userId,
@@ -396,16 +402,18 @@ public class OrderService {
         log.info("Recupero ordini per userId={}, status={}, startDate={}",
                 userId, status, startDate);
 
-        if (!userRepository.existsById(userId)) {
-            throw new ResourceNotFoundException("Utente non trovato con id: " + userId);
+        LocalDateTime normalizedStartDate;
+
+        if (startDate == null) {
+            normalizedStartDate = LocalDateTime.of(1900, 1, 1, 0, 0);
+        } else {
+            normalizedStartDate = startDate.atStartOfDay();
         }
 
-        LocalDateTime startDateTime = getStartDateTime(startDate);
-
         Page<CustomerOrder> orders = orderRepository.searchOrdersByUserFromDate(
-                status,
                 userId,
-                startDateTime,
+                status,
+                normalizedStartDate,
                 pageable
         );
 

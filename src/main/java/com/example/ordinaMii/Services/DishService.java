@@ -51,10 +51,13 @@ public class DishService {
         log.info("Recupero lista piatti. category={}, name={}, descr={}, available={}",
                 category, name, descr, available);
 
+        String normalizedName = name == null ? "" : name.trim().toLowerCase();
+        String normalizedDescr = descr == null ? "" : descr.trim().toLowerCase();
+
         Page<Dish> dishes = dishRepository.searchDishes(
                 category,
-                name,
-                descr,
+                normalizedName,
+                normalizedDescr,
                 available,
                 pageable
         );

@@ -16,31 +16,35 @@ import java.util.UUID;
 public interface OrderRepository extends JpaRepository<CustomerOrder, UUID> {
 
     @Query("""
-            SELECT o
-            FROM CustomerOrder o
-            WHERE (:status IS NULL OR o.status = :status)
-            AND (:userId IS NULL OR o.user.id = :userId)
-            AND (:startDateTime IS NULL OR o.orderDate >= :startDateTime)
-            AND (:endDateTime IS NULL OR o.orderDate < :endDateTime)
-            """)
+        SELECT c
+        FROM CustomerOrder c
+        WHERE (:status IS NULL OR c.status = :status)
+        AND (:customerId IS NULL OR c.user.id = :customerId)
+        AND c.orderDate >= :startDate
+        AND c.orderDate < :endDate
+        ORDER BY c.orderDate DESC
+        """)
     Page<CustomerOrder> searchOrders(
             @Param("status") OrderStatus status,
-            @Param("userId") UUID userId,
-            @Param("startDateTime") LocalDateTime startDateTime,
-            @Param("endDateTime") LocalDateTime endDateTime,
+            @Param("customerId") UUID customerId,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
             Pageable pageable
     );
+
+
     @Query("""
-        SELECT o
-        FROM CustomerOrder o
-        WHERE (:status IS NULL OR o.status = :status)
-        AND o.user.id = :userId
-        AND (:startDateTime IS NULL OR o.orderDate >= :startDateTime)
+        SELECT c
+        FROM CustomerOrder c
+        WHERE c.user.id = :userId
+        AND (:status IS NULL OR c.status = :status)
+        AND c.orderDate >= :startDate
+        ORDER BY c.orderDate DESC
         """)
     Page<CustomerOrder> searchOrdersByUserFromDate(
-            @Param("status") OrderStatus status,
             @Param("userId") UUID userId,
-            @Param("startDateTime") LocalDateTime startDateTime,
+            @Param("status") OrderStatus status,
+            @Param("startDate") LocalDateTime startDate,
             Pageable pageable
     );
 }

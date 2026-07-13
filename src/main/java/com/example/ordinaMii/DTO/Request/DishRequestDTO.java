@@ -10,19 +10,22 @@ import java.math.BigDecimal;
 
 @Builder
 public record DishRequestDTO(
+
         @NotBlank(message = "Il nome del piatto è obbligatorio")
         String name,
 
         String description,
 
         @NotNull(message = "Il prezzo è obbligatorio")
-        @DecimalMin(value = "0.0", inclusive = false, message = "Il prezzo deve essere maggiore di zero")
+        @DecimalMin(value = "0.01", message = "Il prezzo deve essere maggiore di 0")
         BigDecimal price,
 
-        @NotNull(message = "La disponibilità è obbligatoria")
-        Boolean available,
-
         @NotNull(message = "La categoria è obbligatoria")
-        DishCategory category
+        DishCategory category,
+
+        boolean available,
+
+        String imageUrl
+
 ) {
 }

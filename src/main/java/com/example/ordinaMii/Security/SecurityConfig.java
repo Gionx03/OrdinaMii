@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/dishes").hasAnyRole("ADMIN", "CUOCO", "CAMERIERE")
                         .requestMatchers(HttpMethod.PUT, "/dishes/**").hasAnyRole("ADMIN", "CUOCO", "CAMERIERE")
                         .requestMatchers(HttpMethod.DELETE, "/dishes/**").hasRole("ADMIN")
+                        .requestMatchers("/images/**").permitAll()
 
                         // TAVOLI
                         .requestMatchers(HttpMethod.GET, "/tables").permitAll()

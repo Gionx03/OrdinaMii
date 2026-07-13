@@ -31,6 +31,9 @@ public class Dish {
     @Column(name = "Available", nullable = false)
     private boolean available;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "Category", nullable = false)
     private DishCategory category;

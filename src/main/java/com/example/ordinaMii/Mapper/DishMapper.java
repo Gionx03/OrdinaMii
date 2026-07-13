@@ -25,7 +25,7 @@ public class DishMapper {
         dish.setPrice(dto.price());
         dish.setAvailable(dto.available());
         dish.setCategory(dto.category());
-
+        dish.setImageUrl(dto.imageUrl());
         return dish;
     }
 
@@ -40,21 +40,20 @@ public class DishMapper {
         dish.setPrice(dto.price());
         dish.setAvailable(dto.available());
         dish.setCategory(dto.category());
+        dish.setImageUrl(dto.imageUrl());
+
     }
 
     public DishResponseDTO toResponseDTO(Dish dish) {
-
-        if (dish == null) {
-            return null;
-        }
 
         return DishResponseDTO.builder()
                 .id(dish.getId())
                 .name(dish.getName())
                 .description(dish.getDescription())
                 .price(dish.getPrice())
-                .available(dish.isAvailable())
                 .category(dish.getCategory())
+                .available(dish.isAvailable())
+                .imageUrl(dish.getImageUrl())
                 .build();
     }
 
