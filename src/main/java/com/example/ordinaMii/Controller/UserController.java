@@ -2,6 +2,7 @@ package com.example.ordinaMii.Controller;
 
 import com.example.ordinaMii.DTO.Response.OrderResponseDTO;
 import com.example.ordinaMii.DTO.Response.ReservationResponseDTO;
+import com.example.ordinaMii.DTO.Response.UserLightResponseDTO;
 import com.example.ordinaMii.DTO.Response.UserResponseDTO;
 import com.example.ordinaMii.Entity.Enum.OrderStatus;
 import com.example.ordinaMii.Entity.Enum.Roles;
@@ -42,6 +43,21 @@ public class UserController {
         Page<UserResponseDTO> users = userService.getUsers(role, pageable);
 
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/customers")
+    public ResponseEntity<Page<UserLightResponseDTO>> getCustomers(
+            @PageableDefault(
+                    size = 20,
+                    sort = "username"
+            )
+            Pageable pageable
+    ) {
+
+        Page<UserLightResponseDTO> customers =
+                userService.getCustomers(pageable);
+
+        return ResponseEntity.ok(customers);
     }
 
     @GetMapping("/{id}")

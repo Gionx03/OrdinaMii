@@ -163,6 +163,15 @@ Body:
 Ruolo: customer
 
 
+POST /me/orders/{orderId}/request-payment
+Descrizione: richiede il conto al tavolo al cameriere
+Ruolo: customer
+
+
+POST /me/orders/{orderId}/pay
+Descrzione: paga l'ordine
+Ruolo: customer
+
 POST /me/reservations
 Descrizione: crea una prenotazione per l'utente autenticato. Lo userId viene ricavato dal JWT e non viene passato nel body.
 Body:
@@ -195,7 +204,7 @@ Query params:
 - size
 - sort
 Descrizione: ottiene gli ordini di uno specifico utente.
-Ruolo: admin / manager
+Ruolo: admin
 
 GET /users/{id}/reservations
 Query params:
@@ -204,8 +213,12 @@ Query params:
 - size
 - sort
 Descrizione: ottiene le prenotazioni di uno specifico utente.
-Ruolo: admin / manager
+Ruolo: admin
 
+
+GET /users/customers
+Descrizione: Restituisce una pagina di soli clienti
+Ruolo:admin, cameriere
 
 
 

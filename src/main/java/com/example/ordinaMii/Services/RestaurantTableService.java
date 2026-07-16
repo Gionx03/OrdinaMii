@@ -176,4 +176,46 @@ public class RestaurantTableService {
 
         return restaurantTableMapper.toResponseDTO(disabledTable);
     }
+
+    @Transactional
+    @Caching(
+            evict = {
+                    @CacheEvict(
+                            value = "tableSearch",
+                            allEntries = true
+                    )
+            },
+            put = {
+                    @CachePut(
+                            value = "tableById",
+                            key = "#id"
+                    )
+            }
+    )
+    public RestaurantTableResponseDTO reactivateTable(UUID id) {
+
+        log.info("Riattivazione tavolo con id={}", id);
+
+        RestaurantTable table = restaurantTableRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Tavolo non trovato con id: " + id
+                ));
+
+        if (table.isActive()) {
+            throw new ConflictException(
+                    "Il tavolo è già attivo"
+            );
+        }
+
+        table.setActive(true);
+
+        RestaurantTable reactivatedTable =
+                restaurantTableRepository.save(table);
+
+        log.info("Tavolo riattivato con id={}", id);
+
+        return restaurantTableMapper
+                .toResponseDTO(reactivatedTable);
+    }
 }

@@ -42,16 +42,19 @@ public class SecurityConfig {
                         // PIATTI / MENU
                         .requestMatchers(HttpMethod.GET, "/dishes").permitAll()
                         .requestMatchers(HttpMethod.GET, "/dishes/**").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/dishes/images").hasAnyRole("ADMIN", "CUOCO", "CAMERIERE")
                         .requestMatchers(HttpMethod.POST, "/dishes").hasAnyRole("ADMIN", "CUOCO", "CAMERIERE")
                         .requestMatchers(HttpMethod.PUT, "/dishes/**").hasAnyRole("ADMIN", "CUOCO", "CAMERIERE")
                         .requestMatchers(HttpMethod.DELETE, "/dishes/**").hasRole("ADMIN")
                         .requestMatchers("/images/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
 
                         // TAVOLI
                         .requestMatchers(HttpMethod.GET, "/tables").permitAll()
                         .requestMatchers(HttpMethod.GET, "/tables/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/tables").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/tables/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/tables/*/reactivate").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/tables/**").hasRole("ADMIN")
 
                         // ORDINI
@@ -79,6 +82,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/me").hasRole("CLIENTE")
                         .requestMatchers(HttpMethod.GET, "/me/orders").hasRole("CLIENTE")
                         .requestMatchers(HttpMethod.POST, "/me/orders").hasRole("CLIENTE")
+                        .requestMatchers(HttpMethod.POST, "/me/orders/*/pay").hasRole("CLIENTE")
+                        .requestMatchers(HttpMethod.POST, "/me/orders/*/request-payment").hasRole("CLIENTE")
+                        .requestMatchers(HttpMethod.POST, "/me/orders/*/assistance").hasRole("CLIENTE")
                         .requestMatchers(HttpMethod.GET, "/me/reservations").hasRole("CLIENTE")
                         .requestMatchers(HttpMethod.POST, "/me/reservations").hasRole("CLIENTE")
 
@@ -86,7 +92,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/users/*/orders").hasAnyRole("ADMIN", "CAMERIERE")
                         .requestMatchers(HttpMethod.GET, "/users/*/reservations").hasAnyRole("ADMIN", "CAMERIERE")
                         .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/users/customers").hasAnyRole("ADMIN", "CAMERIERE")
                         .requestMatchers(HttpMethod.GET, "/users/**").hasRole("ADMIN")
+
 
                         // Tutto il resto richiede autenticazione
                         .anyRequest().authenticated()

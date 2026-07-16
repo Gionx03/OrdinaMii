@@ -23,7 +23,14 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
 
+  app:
+    uploads:
+      dishes-directory: uploads/dishes
 server:
   port: 8080
 

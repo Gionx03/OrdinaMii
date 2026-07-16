@@ -36,3 +36,4 @@ src/main/resources/passwords.yaml
 .env
 logs/
 *.log
+uploads/

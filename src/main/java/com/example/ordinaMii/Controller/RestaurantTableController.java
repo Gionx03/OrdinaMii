@@ -60,4 +60,14 @@ public class RestaurantTableController {
         RestaurantTableResponseDTO table = restaurantTableService.deleteTable(id);
         return ResponseEntity.ok(table);
     }
+
+    @PatchMapping("/{id}/reactivate")
+    public ResponseEntity<RestaurantTableResponseDTO> reactivateTable(
+            @PathVariable UUID id) {
+
+        RestaurantTableResponseDTO table =
+                restaurantTableService.reactivateTable(id);
+
+        return ResponseEntity.ok(table);
+    }
 }

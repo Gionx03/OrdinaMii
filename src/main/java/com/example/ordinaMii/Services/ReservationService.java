@@ -63,8 +63,20 @@ public class ReservationService {
         log.info("Recupero lista prenotazioni. status={}, userId={}, tableId={}, date={}",
                 status, userId, tableId, date);
 
-        Page<Reservation> reservations =
-                reservationRepository.searchReservations(status, userId, tableId, date, pageable);
+        Page<Reservation> reservations = date == null
+                ? reservationRepository.searchReservations(
+                status,
+                userId,
+                tableId,
+                pageable
+        )
+                : reservationRepository.searchReservationsByDate(
+                status,
+                userId,
+                tableId,
+                date,
+                pageable
+        );
 
         return reservations.map(reservationMapper::toResponseDTO);
     }
@@ -104,7 +116,14 @@ public class ReservationService {
             throw new ResourceNotFoundException("Tavolo non trovato con id: " + tableId);
         }
 
-        Page<Reservation> reservations = reservationRepository.searchReservations(
+        Page<Reservation> reservations = date == null
+                ? reservationRepository.searchReservations(
+                null,
+                null,
+                tableId,
+                pageable
+        )
+                : reservationRepository.searchReservationsByDate(
                 null,
                 null,
                 tableId,
@@ -463,13 +482,18 @@ public class ReservationService {
             throw new ResourceNotFoundException("Utente non trovato con id: " + userId);
         }
 
-        Page<Reservation> reservations = reservationRepository.searchReservationsFromDate(
-                null,
-                userId,
-                null,
-                startDate,
-                pageable
-        );
+        LocalDate normalizedStartDate = startDate == null
+                ? LocalDate.of(1900, 1, 1)
+                : startDate;
+
+        Page<Reservation> reservations =
+                reservationRepository.searchReservationsFromDate(
+                        null,
+                        userId,
+                        null,
+                        normalizedStartDate,
+                        pageable
+                );
 
         return reservations.map(reservationMapper::toResponseDTO);
     }

@@ -2,6 +2,7 @@ package com.example.ordinaMii.Services;
 
 import com.example.ordinaMii.DTO.Request.UpdateMeRequestDTO;
 import com.example.ordinaMii.DTO.Request.UserRequestDTO;
+import com.example.ordinaMii.DTO.Response.UserLightResponseDTO;
 import com.example.ordinaMii.DTO.Response.UserResponseDTO;
 import com.example.ordinaMii.Entity.Enum.Roles;
 import com.example.ordinaMii.Entity.User;
@@ -63,6 +64,24 @@ public class UserService {
                         ("Utente autenticato non trovato con id: " + userId));
 
         return userMapper.toResponseDTO(user);
+    }
+    @Transactional(readOnly = true)
+    @Cacheable(
+            value = "userSearch",
+            key = "'customers_' + " +
+                    "#pageable.pageNumber + '_' + " +
+                    "#pageable.pageSize + '_' + " +
+                    "#pageable.sort"
+    )
+    public Page<UserLightResponseDTO> getCustomers(
+            Pageable pageable
+    ) {
+
+        log.info("Recupero lista clienti");
+
+        return userRepository
+                .findByRole(Roles.CLIENTE, pageable)
+                .map(userMapper::toLightResponseDTO);
     }
 /*
     @Transactional

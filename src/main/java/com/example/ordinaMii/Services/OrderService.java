@@ -1,6 +1,7 @@
 package com.example.ordinaMii.Services;
 
 import com.example.ordinaMii.DTO.Request.*;
+import com.example.ordinaMii.DTO.Response.AssistanceRequestResponseDTO;
 import com.example.ordinaMii.DTO.Response.OrderResponseDTO;
 import com.example.ordinaMii.Entity.*;
 import com.example.ordinaMii.Entity.Enum.OrderStatus;
@@ -39,6 +40,8 @@ public class OrderService {
     private final OrderMapper orderMapper;
     private final OrderItemMapper orderItemMapper;
     private final RestaurantTableRepository restaurantTableRepository;
+    private final AssistanceRequestService assistanceRequestService;
+    private final FakePaymentService fakePaymentService;
 
     public OrderService(OrderRepository orderRepository,
                         OrderItemRepository orderItemRepository,
@@ -46,7 +49,9 @@ public class OrderService {
                         DishRepository dishRepository,
                         OrderMapper orderMapper,
                         OrderItemMapper orderItemMapper,
-                        RestaurantTableRepository restaurantTableRepository) {
+                        RestaurantTableRepository restaurantTableRepository,
+                        AssistanceRequestService assistanceRequestService,
+                        FakePaymentService fakePaymentService) {
 
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
@@ -55,6 +60,8 @@ public class OrderService {
         this.orderMapper = orderMapper;
         this.orderItemMapper = orderItemMapper;
         this.restaurantTableRepository = restaurantTableRepository;
+        this.assistanceRequestService = assistanceRequestService;
+        this.fakePaymentService = fakePaymentService;
     }
 
 
@@ -388,6 +395,110 @@ public class OrderService {
         return getOrdersByUser(userId, status, startDate, pageable);
     }
 
+    @Transactional
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "orderSearch", allEntries = true),
+                    @CacheEvict(value = "myOrderSearch", allEntries = true),
+                    @CacheEvict(value = "userOrderSearch", allEntries = true)
+            },
+            put = {
+                    @CachePut(value = "orderById", key = "#result.id()")
+            }
+    )
+    public OrderResponseDTO payMyOrder(UUID userId, UUID orderId) {
+
+        CustomerOrder customerOrder = getOwnedOrder(userId, orderId);
+
+        if (customerOrder.getPaymentStatus() == PaymentStatus.PENDING) {
+            throw new ConflictException(
+                    "Il pagamento tramite cameriere è già stato richiesto"
+            );
+        }
+
+        validatePaymentStatusTransition(customerOrder, PaymentStatus.PAID);
+
+        FakePaymentService.FakePaymentReceipt receipt =
+                fakePaymentService.pay(customerOrder.getId(), customerOrder.getTotal());
+
+        customerOrder.setPaymentStatus(PaymentStatus.PAID);
+
+        CustomerOrder paidOrder = orderRepository.save(customerOrder);
+        List<OrderItem> orderItems = orderItemRepository.findByCustomerOrder_Id(orderId);
+
+        log.info(
+                "Ordine personale pagato. orderId={}, userId={}, transactionId={}",
+                orderId,
+                userId,
+                receipt.transactionId()
+        );
+
+        return orderMapper.toResponseDTO(paidOrder, orderItems);
+    }
+
+    @Transactional
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "orderSearch", allEntries = true),
+                    @CacheEvict(value = "myOrderSearch", allEntries = true),
+                    @CacheEvict(value = "userOrderSearch", allEntries = true)
+            },
+            put = {
+                    @CachePut(value = "orderById", key = "#result.id()")
+            }
+    )
+    public OrderResponseDTO requestWaiterPayment(UUID userId, UUID orderId) {
+
+        CustomerOrder customerOrder = getOwnedOrder(userId, orderId);
+        RestaurantTable table = requireOrderTable(customerOrder);
+
+        validatePaymentStatusTransition(customerOrder, PaymentStatus.PENDING);
+
+        customerOrder.setPaymentStatus(PaymentStatus.PENDING);
+        CustomerOrder updatedOrder = orderRepository.save(customerOrder);
+
+        assistanceRequestService.createAssistanceRequest(
+                new AssistanceRequestDTO(
+                        "Pagamento al tavolo richiesto per l'ordine #" + orderId,
+                        table.getId()
+                )
+        );
+
+        List<OrderItem> orderItems = orderItemRepository.findByCustomerOrder_Id(orderId);
+
+        log.info(
+                "Pagamento tramite cameriere richiesto. orderId={}, userId={}, tableId={}",
+                orderId,
+                userId,
+                table.getId()
+        );
+
+        return orderMapper.toResponseDTO(updatedOrder, orderItems);
+    }
+
+    @Transactional
+    public AssistanceRequestResponseDTO requestAssistanceForMyOrder(
+            UUID userId,
+            UUID orderId) {
+
+        CustomerOrder customerOrder = getOwnedOrder(userId, orderId);
+
+        if (customerOrder.getStatus() == OrderStatus.CANCELLED) {
+            throw new ConflictException(
+                    "Non è possibile richiedere assistenza per un ordine cancellato"
+            );
+        }
+
+        RestaurantTable table = requireOrderTable(customerOrder);
+
+        return assistanceRequestService.createAssistanceRequest(
+                new AssistanceRequestDTO(
+                        "Richiesta assistenza per l'ordine #" + orderId,
+                        table.getId()
+                )
+        );
+    }
+
     @Transactional(readOnly = true)
     @Cacheable(
             value = "userOrderSearch",
@@ -482,6 +593,25 @@ public class OrderService {
                     "Non è possibile modificare un ordine con pagamento annullato"
             );
         }
+    }
+
+    private CustomerOrder getOwnedOrder(UUID userId, UUID orderId) {
+
+        return orderRepository.findByIdAndUser_Id(orderId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Ordine personale non trovato con id: " + orderId
+                ));
+    }
+
+    private RestaurantTable requireOrderTable(CustomerOrder customerOrder) {
+
+        if (customerOrder.getTable() == null) {
+            throw new BadRequestException(
+                    "Questa operazione è disponibile solo per un ordine al tavolo"
+            );
+        }
+
+        return customerOrder.getTable();
     }
 
     private void validateOrderStatusTransition(

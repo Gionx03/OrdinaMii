@@ -3,6 +3,7 @@ package com.example.ordinaMii.Controller;
 import com.example.ordinaMii.DTO.Request.MyOrderRequestDTO;
 import com.example.ordinaMii.DTO.Request.MyReservationRequestDTO;
 import com.example.ordinaMii.DTO.Request.UpdateMeRequestDTO;
+import com.example.ordinaMii.DTO.Response.AssistanceRequestResponseDTO;
 import com.example.ordinaMii.DTO.Response.OrderResponseDTO;
 import com.example.ordinaMii.DTO.Response.ReservationResponseDTO;
 import com.example.ordinaMii.DTO.Response.UserResponseDTO;
@@ -117,5 +118,45 @@ public class MeController {
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(order);
+    }
+
+    @PostMapping("/orders/{orderId}/pay")
+    public ResponseEntity<OrderResponseDTO> payMyOrder(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable UUID orderId) {
+
+        UserResponseDTO user = userService.getOrCreateMe(jwt);
+
+        OrderResponseDTO order = orderService.payMyOrder(user.id(), orderId);
+
+        return ResponseEntity.ok(order);
+    }
+
+    @PostMapping("/orders/{orderId}/request-payment")
+    public ResponseEntity<OrderResponseDTO> requestWaiterPayment(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable UUID orderId) {
+
+        UserResponseDTO user = userService.getOrCreateMe(jwt);
+
+        OrderResponseDTO order = orderService.requestWaiterPayment(
+                user.id(),
+                orderId
+        );
+
+        return ResponseEntity.ok(order);
+    }
+
+    @PostMapping("/orders/{orderId}/assistance")
+    public ResponseEntity<AssistanceRequestResponseDTO> requestOrderAssistance(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable UUID orderId) {
+
+        UserResponseDTO user = userService.getOrCreateMe(jwt);
+
+        AssistanceRequestResponseDTO assistanceRequest =
+                orderService.requestAssistanceForMyOrder(user.id(), orderId);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(assistanceRequest);
     }
 }

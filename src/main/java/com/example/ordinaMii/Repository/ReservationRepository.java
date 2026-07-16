@@ -17,15 +17,30 @@ import java.util.UUID;
 public interface ReservationRepository extends JpaRepository<Reservation, UUID> {
 
     @Query("""
-            SELECT r
-            FROM Reservation r
-            WHERE (:status IS NULL OR r.status = :status)
-            AND (:userId IS NULL OR r.user.id = :userId)
-            AND (:tableId IS NULL OR r.table.id = :tableId)
-            AND (:date IS NULL OR r.date = :date)
-            ORDER BY r.date ASC, r.time ASC
-            """)
+        SELECT r
+        FROM Reservation r
+        WHERE (:status IS NULL OR r.status = :status)
+        AND (:userId IS NULL OR r.user.id = :userId)
+        AND (:tableId IS NULL OR r.table.id = :tableId)
+        ORDER BY r.date ASC, r.time ASC
+        """)
     Page<Reservation> searchReservations(
+            @Param("status") ReservationStatus status,
+            @Param("userId") UUID userId,
+            @Param("tableId") UUID tableId,
+            Pageable pageable
+    );
+
+    @Query("""
+        SELECT r
+        FROM Reservation r
+        WHERE (:status IS NULL OR r.status = :status)
+        AND (:userId IS NULL OR r.user.id = :userId)
+        AND (:tableId IS NULL OR r.table.id = :tableId)
+        AND r.date = :date
+        ORDER BY r.date ASC, r.time ASC
+        """)
+    Page<Reservation> searchReservationsByDate(
             @Param("status") ReservationStatus status,
             @Param("userId") UUID userId,
             @Param("tableId") UUID tableId,
@@ -34,14 +49,14 @@ public interface ReservationRepository extends JpaRepository<Reservation, UUID> 
     );
 
     @Query("""
-            SELECT r
-            FROM Reservation r
-            WHERE (:status IS NULL OR r.status = :status)
-            AND (:userId IS NULL OR r.user.id = :userId)
-            AND (:tableId IS NULL OR r.table.id = :tableId)
-            AND (:startDate IS NULL OR r.date >= :startDate)
-            ORDER BY r.date ASC, r.time ASC
-            """)
+        SELECT r
+        FROM Reservation r
+        WHERE (:status IS NULL OR r.status = :status)
+        AND (:userId IS NULL OR r.user.id = :userId)
+        AND (:tableId IS NULL OR r.table.id = :tableId)
+        AND r.date >= :startDate
+        ORDER BY r.date ASC, r.time ASC
+        """)
     Page<Reservation> searchReservationsFromDate(
             @Param("status") ReservationStatus status,
             @Param("userId") UUID userId,
