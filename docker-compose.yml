@@ -23,6 +23,7 @@ services:
     volumes:
       - keycloak_data:/opt/keycloak/data
       - ./keycloak/import:/opt/keycloak/data/import
+      - ./keycloak/themes:/opt/keycloak/themes:ro
 
 volumes:
   postgres_data:

@@ -1,0 +1,718 @@
+:root {
+  color-scheme: light;
+  --keycloak-card-top-color: transparent;
+  --ordinamii-ink: #27321f;
+  --ordinamii-ink-soft: #536047;
+  --ordinamii-green: #435536;
+  --ordinamii-green-dark: #314027;
+  --ordinamii-green-light: #8d9c73;
+  --ordinamii-cream: #f4eee2;
+  --ordinamii-panna: #fffaf0;
+  --ordinamii-paper: #fffdf7;
+  --ordinamii-line: rgba(67, 85, 54, 0.2);
+  --ordinamii-shadow: 0 28px 80px rgba(39, 50, 31, 0.16);
+  --ordinamii-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body,
+.login-pf,
+.pf-v5-c-background-image,
+.pf-v6-c-background-image,
+.pf-v5-c-login,
+.pf-v6-c-login {
+  background:
+    radial-gradient(circle at 13% 18%, rgba(141, 156, 115, 0.22), transparent 29rem),
+    radial-gradient(circle at 86% 82%, rgba(201, 185, 159, 0.28), transparent 31rem),
+    linear-gradient(135deg, #fffdf7 0%, #f7f2e7 52%, #eef1e6 100%) !important;
+  color: var(--ordinamii-ink);
+}
+
+body {
+  position: relative;
+  overflow-x: hidden;
+  margin: 0;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+/* Cerchi decorativi ispirati ai piatti usati nella home di OrdinaMii. */
+body::before,
+body::after {
+  position: fixed;
+  z-index: 0;
+  border: 1px solid rgba(67, 85, 54, 0.13);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+body::before {
+  top: -14rem;
+  right: -10rem;
+  width: min(39rem, 72vw);
+  aspect-ratio: 1;
+  background:
+    radial-gradient(circle at 38% 35%, rgba(255, 255, 255, 0.75), transparent 22%),
+    rgba(141, 156, 115, 0.1);
+  box-shadow:
+    inset 0 0 0 18px rgba(255, 253, 247, 0.28),
+    0 34px 90px rgba(67, 85, 54, 0.1);
+}
+
+body::after {
+  bottom: -18rem;
+  left: -12rem;
+  width: min(34rem, 70vw);
+  aspect-ratio: 1;
+  background: rgba(201, 185, 159, 0.11);
+  box-shadow: inset 0 0 0 14px rgba(255, 253, 247, 0.3);
+}
+
+.login-pf-page,
+.pf-v5-c-login__container,
+.pf-v6-c-login__container {
+  position: relative;
+  z-index: 1;
+}
+
+.login-pf-page,
+.pf-v5-c-login,
+.pf-v6-c-login {
+  display: grid;
+  min-height: 100vh;
+  align-items: center;
+  padding: clamp(1.25rem, 4vw, 3rem);
+}
+
+.pf-v5-c-login__container,
+.pf-v6-c-login__container {
+  grid-template-columns: minmax(0, 31rem) !important;
+  grid-template-areas:
+    "header"
+    "main" !important;
+  width: min(100%, 31rem);
+  margin-inline: auto;
+}
+
+/* Marchio visuale: non richiede la modifica dei template FreeMarker. */
+#kc-header,
+.login-pf-page-header,
+.pf-v5-c-login__header,
+.pf-v6-c-login__header {
+  margin: 0 0 1.25rem;
+  padding: 0;
+  text-align: center;
+}
+
+#kc-header-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.72rem;
+  color: var(--ordinamii-ink);
+  font-size: 0;
+  font-weight: 850;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  text-transform: none;
+}
+
+#kc-header-wrapper::before {
+  display: grid;
+  width: 2.8rem;
+  height: 2.8rem;
+  place-items: center;
+  border-radius: 0.9rem;
+  background: linear-gradient(145deg, var(--ordinamii-green-light), var(--ordinamii-green));
+  box-shadow: 0 12px 26px rgba(67, 85, 54, 0.24);
+  color: var(--ordinamii-panna);
+  content: "O";
+  font-size: 1.18rem;
+  font-weight: 900;
+}
+
+#kc-header-wrapper::after {
+  color: var(--ordinamii-ink);
+  content: "OrdinaMii";
+  font-size: clamp(1.42rem, 5vw, 1.8rem);
+  font-weight: 850;
+}
+
+.card-pf,
+.pf-v5-c-login__main,
+.pf-v6-c-login__main,
+.pf-v5-c-card,
+.pf-v6-c-card {
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.82) !important;
+  border-radius: 1.75rem !important;
+  background: rgba(255, 253, 247, 0.76) !important;
+  box-shadow:
+    var(--ordinamii-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(22px) saturate(1.16);
+  -webkit-backdrop-filter: blur(22px) saturate(1.16);
+}
+
+.card-pf {
+  padding: clamp(1.45rem, 5vw, 2.35rem) !important;
+}
+
+/*
+ * PatternFly applica già il padding alle sezioni interne del login. Lasciare
+ * anche il padding sul contenitore principale raddoppiava gli spazi e faceva
+ * uscire la registrazione dalla prima schermata.
+ */
+.pf-v5-c-login__main,
+.pf-v6-c-login__main {
+  padding: 0 !important;
+}
+
+.pf-v5-c-login {
+  --pf-v5-c-login__main-header--PaddingTop: 2rem;
+  --pf-v5-c-login__main-header--PaddingRight: 2rem;
+  --pf-v5-c-login__main-header--PaddingBottom: 0.8rem;
+  --pf-v5-c-login__main-header--PaddingLeft: 2rem;
+  --pf-v5-c-login__main-header--md--PaddingRight: 2rem;
+  --pf-v5-c-login__main-header--md--PaddingLeft: 2rem;
+  --pf-v5-c-login__main-body--PaddingRight: 2rem;
+  --pf-v5-c-login__main-body--PaddingBottom: 1.5rem;
+  --pf-v5-c-login__main-body--PaddingLeft: 2rem;
+  --pf-v5-c-login__main-body--md--PaddingRight: 2rem;
+  --pf-v5-c-login__main-body--md--PaddingLeft: 2rem;
+  --pf-v5-c-login__main-footer-band--PaddingBottom: 1rem;
+  --pf-v5-c-login__main-footer-band-item--PaddingTop: 0.75rem;
+}
+
+.pf-v5-c-login__main-header,
+.pf-v6-c-login__main-header {
+  border-top: 0 !important;
+  box-shadow: none !important;
+}
+
+#kc-content,
+#kc-content-wrapper {
+  color: var(--ordinamii-ink);
+}
+
+#kc-page-title,
+.pf-v5-c-title,
+.pf-v6-c-title {
+  margin: 0 0 0.55rem;
+  color: var(--ordinamii-ink) !important;
+  font-size: clamp(1.55rem, 5vw, 2rem) !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+  text-align: left;
+}
+
+#kc-page-title::after {
+  display: block;
+  width: 3rem;
+  height: 0.24rem;
+  margin-top: 0.85rem;
+  border-radius: 999px;
+  background: var(--ordinamii-green);
+  content: "";
+}
+
+#kc-form,
+#kc-form-wrapper {
+  margin-top: 1.25rem;
+}
+
+.pf-v5-c-form,
+.pf-v6-c-form {
+  --pf-v5-c-form--GridGap: 1.05rem;
+  --pf-v6-c-form--Gap: 1.05rem;
+}
+
+label,
+.pf-v5-c-form__label,
+.pf-v6-c-form__label {
+  color: var(--ordinamii-ink) !important;
+  font-size: 0.88rem;
+  font-weight: 750 !important;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+.pf-v5-c-form-control,
+.pf-v6-c-form-control {
+  min-height: 3.15rem;
+  border: 1px solid var(--ordinamii-line) !important;
+  border-radius: 0.9rem !important;
+  background: rgba(255, 255, 255, 0.78) !important;
+  box-shadow: inset 0 1px 2px rgba(39, 50, 31, 0.035) !important;
+  color: var(--ordinamii-ink) !important;
+  transition:
+    border-color 160ms ease,
+    box-shadow 180ms ease,
+    background-color 160ms ease;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"] {
+  padding: 0.78rem 0.95rem !important;
+}
+
+input::placeholder {
+  color: #7b8472;
+  opacity: 0.85;
+}
+
+input:focus,
+input:focus-visible,
+.pf-v5-c-form-control:focus-within,
+.pf-v6-c-form-control:focus-within {
+  border-color: var(--ordinamii-green) !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 0.24rem rgba(101, 118, 80, 0.17) !important;
+  outline: none !important;
+}
+
+/*
+ * In keycloak.v2 l'input reale è contenuto dentro uno span
+ * .pf-v5-c-form-control. Il bordo va applicato soltanto allo span; applicarlo
+ * anche all'input produceva il doppio contorno visibile nello screenshot.
+ */
+.pf-v5-c-form-control {
+  --pf-v5-c-form-control--before--BorderTopWidth: 0;
+  --pf-v5-c-form-control--before--BorderRightWidth: 0;
+  --pf-v5-c-form-control--before--BorderBottomWidth: 0;
+  --pf-v5-c-form-control--before--BorderLeftWidth: 0;
+  --pf-v5-c-form-control--after--BorderBottomWidth: 0;
+  overflow: hidden;
+}
+
+.pf-v5-c-form-control::before,
+.pf-v5-c-form-control::after {
+  border: 0 !important;
+}
+
+.pf-v5-c-form-control > input {
+  width: 100%;
+  min-height: 3.05rem;
+  border: 0 !important;
+  border-radius: inherit !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--ordinamii-ink) !important;
+  outline: none !important;
+  padding: 0.72rem 0.95rem !important;
+}
+
+.pf-v5-c-form-control > input:focus,
+.pf-v5-c-form-control > input:focus-visible {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.pf-v5-c-form-control.pf-m-error {
+  border-color: rgba(145, 66, 54, 0.72) !important;
+  box-shadow: 0 0 0 0.2rem rgba(145, 66, 54, 0.1) !important;
+}
+
+/* Campo password e pulsante per mostrare/nascondere la password. */
+.pf-v5-c-input-group {
+  display: flex;
+  min-height: 3.15rem;
+  gap: 0 !important;
+  overflow: hidden;
+  border: 1px solid var(--ordinamii-line) !important;
+  border-radius: 0.9rem !important;
+  background: rgba(255, 255, 255, 0.78) !important;
+  box-shadow: inset 0 1px 2px rgba(39, 50, 31, 0.035) !important;
+  transition:
+    border-color 160ms ease,
+    box-shadow 180ms ease,
+    background-color 160ms ease;
+}
+
+.pf-v5-c-input-group:focus-within {
+  border-color: var(--ordinamii-green) !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 0.24rem rgba(101, 118, 80, 0.17) !important;
+}
+
+.pf-v5-c-input-group .pf-v5-c-form-control {
+  height: 100%;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.pf-v5-c-input-group__item.pf-m-fill {
+  min-width: 0;
+}
+
+.pf-v5-c-input-group__item:last-child {
+  display: flex;
+  flex: 0 0 3.65rem;
+}
+
+.pf-v5-c-input-group button[data-password-toggle] {
+  --pf-v5-c-button--m-control--after--BorderWidth: 0;
+  --pf-v5-c-button--m-control--hover--after--BorderBottomWidth: 0;
+  --pf-v5-c-button--m-control--focus--after--BorderBottomWidth: 0;
+  --pf-v5-c-button--m-control--active--after--BorderBottomWidth: 0;
+  width: 100%;
+  min-width: 3.65rem;
+  height: 100%;
+  border: 0 !important;
+  border-left: 1px solid var(--ordinamii-line) !important;
+  border-radius: 0 !important;
+  background: rgba(244, 238, 226, 0.72) !important;
+  box-shadow: none !important;
+  color: var(--ordinamii-green) !important;
+  outline: none !important;
+}
+
+.pf-v5-c-input-group button[data-password-toggle]::after {
+  border: 0 !important;
+}
+
+.pf-v5-c-input-group button[data-password-toggle]:hover,
+.pf-v5-c-input-group button[data-password-toggle]:focus-visible {
+  background: rgba(232, 237, 220, 0.95) !important;
+  color: var(--ordinamii-green-dark) !important;
+}
+
+/* Pulsante che mostra/nasconde la password. */
+.pf-v5-c-input-group__item button,
+.pf-v6-c-input-group__item button,
+button[data-password-toggle] {
+  border-color: var(--ordinamii-line) !important;
+  background: rgba(255, 255, 255, 0.82) !important;
+  color: var(--ordinamii-green) !important;
+}
+
+.pf-v5-c-button.pf-m-primary,
+.pf-v6-c-button.pf-m-primary,
+#kc-login,
+input[type="submit"] {
+  min-height: 3.1rem;
+  border: 1px solid var(--ordinamii-green) !important;
+  border-radius: 0.9rem !important;
+  background: linear-gradient(135deg, #596b49, var(--ordinamii-green)) !important;
+  box-shadow: 0 12px 24px rgba(67, 85, 54, 0.22) !important;
+  color: var(--ordinamii-panna) !important;
+  font-weight: 800 !important;
+  cursor: pointer;
+  transition:
+    transform 160ms var(--ordinamii-ease),
+    box-shadow 220ms var(--ordinamii-ease),
+    filter 160ms ease;
+}
+
+.pf-v5-c-button.pf-m-primary:hover,
+.pf-v6-c-button.pf-m-primary:hover,
+#kc-login:hover,
+input[type="submit"]:hover {
+  box-shadow: 0 16px 30px rgba(49, 64, 39, 0.28) !important;
+  filter: brightness(1.04);
+  transform: translateY(-2px);
+}
+
+.pf-v5-c-button.pf-m-primary:active,
+.pf-v6-c-button.pf-m-primary:active,
+#kc-login:active,
+input[type="submit"]:active {
+  box-shadow: 0 6px 14px rgba(49, 64, 39, 0.2) !important;
+  transform: translateY(0) scale(0.985);
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 3px solid rgba(101, 118, 80, 0.24) !important;
+  outline-offset: 3px;
+}
+
+a,
+.pf-v5-c-button.pf-m-link,
+.pf-v6-c-button.pf-m-link {
+  color: var(--ordinamii-green) !important;
+  font-weight: 720;
+  text-decoration-color: rgba(67, 85, 54, 0.34);
+  text-underline-offset: 0.18em;
+}
+
+a:hover,
+.pf-v5-c-button.pf-m-link:hover,
+.pf-v6-c-button.pf-m-link:hover {
+  color: var(--ordinamii-green-dark) !important;
+  text-decoration: underline;
+}
+
+#kc-form-options,
+#kc-form-options label,
+.checkbox,
+.pf-v5-c-check__label,
+.pf-v6-c-check__label {
+  color: var(--ordinamii-ink-soft) !important;
+  font-size: 0.86rem;
+}
+
+input[type="checkbox"] {
+  accent-color: var(--ordinamii-green);
+}
+
+#kc-info,
+#kc-info-wrapper,
+#kc-registration {
+  margin-top: 1.35rem !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--ordinamii-ink-soft) !important;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+#kc-info-wrapper {
+  padding: 1rem 0 0 !important;
+  border-top: 1px solid var(--ordinamii-line) !important;
+}
+
+#kc-social-providers {
+  margin-top: 1.25rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--ordinamii-line);
+}
+
+#kc-social-providers hr,
+.pf-v5-c-divider,
+.pf-v6-c-divider {
+  border-color: var(--ordinamii-line) !important;
+}
+
+.kc-social-item,
+#kc-social-providers a,
+.pf-v5-c-button.pf-m-secondary,
+.pf-v6-c-button.pf-m-secondary {
+  border: 1px solid var(--ordinamii-line) !important;
+  border-radius: 0.85rem !important;
+  background: rgba(255, 255, 255, 0.68) !important;
+  color: var(--ordinamii-ink) !important;
+}
+
+/*
+ * Il collegamento Passkey viene generato da Keycloak con l'id
+ * authenticateWebAuthnButton. Il selettore specifico elimina il bordo blu
+ * di PatternFly e lo trasforma in un vero pulsante secondario OrdinaMii.
+ */
+#authenticateWebAuthnButton {
+  --pf-v5-c-button--after--BorderColor: rgba(67, 85, 54, 0.3);
+  --pf-v5-c-button--after--BorderWidth: 1px;
+  --pf-v5-c-button--hover--after--BorderWidth: 1px;
+  --pf-v5-c-button--focus--after--BorderWidth: 1px;
+  --pf-v5-c-button--active--after--BorderWidth: 1px;
+  display: inline-flex !important;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  border: 0 !important;
+  border-radius: 0.9rem !important;
+  background: linear-gradient(135deg, rgba(232, 237, 220, 0.95), rgba(255, 250, 240, 0.98)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 9px 22px rgba(67, 85, 54, 0.1) !important;
+  color: var(--ordinamii-green-dark) !important;
+  font-weight: 800 !important;
+  text-decoration: none !important;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 220ms var(--ordinamii-ease),
+    transform 160ms var(--ordinamii-ease);
+}
+
+#authenticateWebAuthnButton::before {
+  width: 1.08rem;
+  height: 1.08rem;
+  flex: 0 0 auto;
+  background: currentColor;
+  content: "";
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7.5 14a5.5 5.5 0 1 1 4.96-3.12L22 10.9V15h-3v3h-3v3h-4v-5.1A5.47 5.47 0 0 1 7.5 14Zm0-3a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7.5 14a5.5 5.5 0 1 1 4.96-3.12L22 10.9V15h-3v3h-3v3h-4v-5.1A5.47 5.47 0 0 1 7.5 14Zm0-3a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+#authenticateWebAuthnButton::after {
+  border: 1px solid rgba(67, 85, 54, 0.3) !important;
+  border-radius: 0.9rem !important;
+}
+
+#authenticateWebAuthnButton:hover {
+  --pf-v5-c-button--after--BorderColor: var(--ordinamii-green);
+  border-color: var(--ordinamii-green) !important;
+  background: linear-gradient(135deg, #596b49, var(--ordinamii-green)) !important;
+  box-shadow: 0 14px 28px rgba(49, 64, 39, 0.22) !important;
+  color: var(--ordinamii-panna) !important;
+  text-decoration: none !important;
+  transform: translateY(-2px);
+}
+
+#authenticateWebAuthnButton:hover::after,
+#authenticateWebAuthnButton:active::after {
+  border-color: var(--ordinamii-green) !important;
+}
+
+#authenticateWebAuthnButton:focus,
+#authenticateWebAuthnButton:focus-visible {
+  --pf-v5-c-button--after--BorderColor: var(--ordinamii-green);
+  border-color: var(--ordinamii-green) !important;
+  outline: none !important;
+  box-shadow:
+    0 0 0 0.24rem rgba(101, 118, 80, 0.18),
+    0 10px 24px rgba(67, 85, 54, 0.14) !important;
+}
+
+#authenticateWebAuthnButton:focus::after,
+#authenticateWebAuthnButton:focus-visible::after {
+  border-color: var(--ordinamii-green) !important;
+}
+
+#authenticateWebAuthnButton:active {
+  box-shadow: 0 5px 12px rgba(49, 64, 39, 0.17) !important;
+  transform: translateY(0) scale(0.985);
+}
+
+.alert,
+.pf-v5-c-alert,
+.pf-v6-c-alert {
+  margin-bottom: 1rem;
+  border: 1px solid rgba(101, 118, 80, 0.2) !important;
+  border-radius: 0.9rem !important;
+  background: rgba(232, 237, 220, 0.76) !important;
+  box-shadow: none !important;
+  color: var(--ordinamii-ink) !important;
+}
+
+.alert-error,
+.pf-v5-c-alert.pf-m-danger,
+.pf-v6-c-alert.pf-m-danger {
+  border-color: rgba(145, 66, 54, 0.24) !important;
+  background: rgba(252, 237, 232, 0.88) !important;
+  color: #73352c !important;
+}
+
+.instruction,
+.subtitle,
+#kc-attempted-username,
+.pf-v5-c-form__helper-text,
+.pf-v6-c-form__helper-text {
+  color: var(--ordinamii-ink-soft) !important;
+  line-height: 1.55;
+}
+
+/* Menu della lingua, se verranno aggiunte altre lingue al realm. */
+#kc-locale-dropdown a,
+#kc-locale ul,
+.pf-v5-c-menu,
+.pf-v6-c-menu {
+  border-color: var(--ordinamii-line) !important;
+  border-radius: 0.8rem !important;
+  background: rgba(255, 253, 247, 0.96) !important;
+  color: var(--ordinamii-ink) !important;
+  box-shadow: 0 14px 32px rgba(39, 50, 31, 0.13) !important;
+}
+
+.card-pf,
+.pf-v5-c-login__main,
+.pf-v6-c-login__main {
+  animation: ordinamii-card-enter 520ms var(--ordinamii-ease) both;
+}
+
+#kc-header-wrapper {
+  animation: ordinamii-brand-enter 620ms var(--ordinamii-ease) both;
+}
+
+@keyframes ordinamii-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ordinamii-brand-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 36rem) {
+  .login-pf-page,
+  .pf-v5-c-login,
+  .pf-v6-c-login {
+    padding: 1rem;
+  }
+
+  .card-pf,
+  .pf-v5-c-login__main,
+  .pf-v6-c-login__main {
+    border-radius: 1.35rem !important;
+  }
+
+  .card-pf {
+    padding: 1.35rem !important;
+  }
+
+  .pf-v5-c-login {
+    --pf-v5-c-login__main-header--PaddingTop: 1.5rem;
+    --pf-v5-c-login__main-header--PaddingRight: 1.35rem;
+    --pf-v5-c-login__main-header--PaddingLeft: 1.35rem;
+    --pf-v5-c-login__main-header--md--PaddingRight: 1.35rem;
+    --pf-v5-c-login__main-header--md--PaddingLeft: 1.35rem;
+    --pf-v5-c-login__main-body--PaddingRight: 1.35rem;
+    --pf-v5-c-login__main-body--PaddingLeft: 1.35rem;
+    --pf-v5-c-login__main-body--md--PaddingRight: 1.35rem;
+    --pf-v5-c-login__main-body--md--PaddingLeft: 1.35rem;
+  }
+
+  body::before {
+    top: -9rem;
+    right: -10rem;
+  }
+
+  body::after {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
